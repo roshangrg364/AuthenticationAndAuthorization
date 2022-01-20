@@ -1,0 +1,61 @@
+﻿
+@{
+
+}
+<div class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card  card-tasks">
+                <div class="card-header ">
+                    <h5 class="card-category">Category</h5>
+
+                </div>
+             
+                <div class="card-body ">
+                    <div class="col-md-12">
+                        @(Html.Kendo().Grid<InventorySystemMysql.Areas.Inventory.ViewModels.Category.CategoryIndexViewModel>()
+                        .Name("grid")
+                        .Columns(columns =>
+                        {
+                            columns.Bound(p => p.Id).Width(150);
+                            columns.Bound(p => p.Name).Width(200);
+                            columns.Bound(p => p.Status).Width(100);
+                            columns.Command(command =>
+                            {
+                                command.Custom("edit").IconClass("k-icon k-i-edit").HtmlAttributes(new { @class = "k-primary" });
+                            }).Width(300).Title("Action");
+                        })
+                        .ToolBar(toolbar =>
+                        {
+                            toolbar.Custom().Name("Add").Text("Add").IconClass("k-icon k-i-add").HtmlAttributes(new { @class = "k-primary", href = Url.Action("Create", "Category") });
+                            toolbar.Search();
+
+                        })
+                        .Search(search =>
+                        {
+                            search.Field(item => item.Name);
+                        })
+                        .Pageable(pageable => pageable
+                            .Refresh(true)
+                            .PageSizes(true)
+                            .PageSizes(new int[] { 10,20,50,100,1000,2000,5000})
+                            .ButtonCount(5))
+                        .Scrollable()
+                        .Sortable()
+                        .Filterable()
+                        .DataSource(dataSource => dataSource
+                            .Ajax()
+                            .PageSize(50)
+                            .Model(m => { m.Id(p => p.Id); })
+                            .Read(read => read.Action("Read", "Category"))
+                        )
+                        )
+                    </div>
+                </div>
+                <div class="card-footer ">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,65 @@
+﻿
+@{ 
+
+    Layout = null;
+}
+<div class="sidebar" data-color="orange">
+    <!--
+        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
+    -->
+    <div class="logo">
+        <a href="#" class="simple-text logo-mini">
+            RG
+        </a>
+        <a href="#" class="simple-text logo-normal">
+        My Enterprises
+        </a>
+    </div>
+    <div class="sidebar-wrapper" id="sidebar-wrapper">
+        <ul class="nav">
+            <li class="active">
+                <a asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="now-ui-icons design_app"></i>
+                    <p>Dashboard</p>
+                </a>
+            </li>
+            <li>
+                <a asp-area="Inventory" asp-controller="Category" asp-action="Index">
+                    <i class="now-ui-icons education_atom"></i>
+                    <p>Category</p>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="now-ui-icons location_map-big"></i>
+                    <p>Menu 2</p>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="now-ui-icons ui-1_bell-53"></i>
+                    <p>Menu 3</p>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="now-ui-icons users_single-02"></i>
+                    <p>Menu 4</p>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="now-ui-icons design_bullet-list-67"></i>
+                    <p>Menu 5</p>
+                </a>
+            </li>
+            <li>
+                <a asp-area="User" asp-controller="User" asp-action="Index">
+                    <i class="now-ui-icons text_caps-small"></i>
+                    <p>User</p>
+                </a>
+            </li>
+        
+        </ul>
+    </div>
+</div>
