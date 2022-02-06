@@ -1,6 +1,7 @@
 ﻿using InventorySystemMysql.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,6 +17,7 @@ using UserModule.Repository;
 using crypter = BCrypt.Net.BCrypt;
 namespace InventorySystemMysql.Controllers
 {
+    [AllowAnonymous]
     public class AccountController : Controller
     {
         private readonly ILogger<AccountController> _logger;
@@ -50,23 +52,18 @@ namespace InventorySystemMysql.Controllers
             {
             if(ModelState.IsValid)
                 {
-                    var user = await _userRepo.GetByUserName(model.UserName) ?? throw new Exception("Incorrect UserName or Password");
-                    var IsPasswordCorrect = await _signInManager.CheckPasswordSignInAsync(user, model.Password,false);
-                    if(!IsPasswordCorrect.Succeeded) throw new Exception("Incorrect UserName or Password");
-                    //var claims = new List<Claim>
-                    //{
-                    //    new Claim(ClaimTypes.NameIdentifier,model.UserName),
-                    //    new Claim(ClaimTypes.Name,model.UserName),
-                    //};
-                    //    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    //    var principal = new ClaimsPrincipal(identity);
-                       var authentiationPRop = new AuthenticationProperties { IsPersistent= false};
-                    //  await HttpContext.SignInAsync(principal,authentiationPRop);
-                    await _signInManager.SignInAsync(user, authentiationPRop);
+                    
+                        var user = await _userManager.FindByNameAsync(model.UserName) ?? throw new Exception("Incorrect UserName or Password");
+                        var IsPasswordCorrect = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
+                        if (!IsPasswordCorrect.Succeeded) throw new Exception("Incorrect UserName or Password");
                     _notify.AddSuccessToastMessage("Logged In Successfully");
-                    return Redirect(model.ReturnUrl);
- 
-                }
+                    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                    {
+                        return LocalRedirect(model.ReturnUrl);
+                    }
+                    return RedirectToAction("Index", "Home");
+                    }
+                
             }
             catch (Exception ex)
             {

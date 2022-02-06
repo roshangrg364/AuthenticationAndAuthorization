@@ -9,7 +9,8 @@ namespace InventorySystemMysql.Areas.User.ViewModel
 
     public class UserIndexViewModel
     {
-        public long Id { get; set; }
+        public long SNo { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public string UserName { get; set; }
         public string EmailAddress { get; set; }
@@ -34,4 +35,18 @@ namespace InventorySystemMysql.Areas.User.ViewModel
         [DataType(DataType.PhoneNumber,ErrorMessage ="Invalid mobile number")]
         public string MobileNumber { get; set; }
     }
+
+    public class AssignRoleViewModel
+    {
+        public string UserId { get; set; }
+        public string UserName { get; set; }
+        public IList<RolesViewModel> Roles { get; set; } = new List<RolesViewModel>();
+}
+public class RolesViewModel
+{
+    public string  RoleId { get; set; }
+    public string  RoleName { get; set; }
+    public bool  IsSelected { get; set; }
+}
+
 }

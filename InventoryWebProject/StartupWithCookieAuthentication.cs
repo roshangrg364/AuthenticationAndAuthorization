@@ -2,14 +2,12 @@
 using BaseModule.DbContextConfig;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,26 +41,15 @@ namespace InventorySystemMysql
             });
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<MyDbContext>();
-
-            services.Configure<IdentityOptions>(options =>
-            {
-                options.Password.RequireUppercase = false;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-            }
-            );
             services.AddMvc().AddNToastNotifyToastr(new ToastrOptions()
             {
                 ProgressBar = true,
                 TimeOut = 1500,
                 PositionClass = ToastPositions.TopRight 
             })
-             .AddMvcOptions(options =>
-             {
-                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                 options.Filters.Add(new AuthorizeFilter(policy));
-             })
+            .AddSessionStateTempDataProvider()
+            .AddSessionStateTempDataProvider()
+            .AddCookieTempDataProvider()
             .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null) ;
 
             services.UseInventoryDiConfig();
@@ -76,24 +63,39 @@ namespace InventorySystemMysql
                 }
             );
 
-           services.Configure<CookieTempDataProviderOptions>(options => { options.Cookie.IsEssential = true; });
-            services.ConfigureApplicationCookie(options =>
-             {
-                 // Cookie settings
-                 options.Cookie.HttpOnly = true;
-                 options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-                 options.Cookie.SameSite = SameSiteMode.Strict;
-                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                 options.Events.OnRedirectToLogin = (evnt) =>
-                     {
-                         var returnUrl = evnt.Request.Path;
-                         if (string.IsNullOrWhiteSpace(returnUrl) || returnUrl == "/") returnUrl = "/Home/Index";
-                         evnt.Response.Redirect("/Account/Login?ReturnUrl=" + returnUrl);
-                         return Task.CompletedTask;
-                     };
-                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-                 options.SlidingExpiration = true;
-             });
+            services.Configure<CookieTempDataProviderOptions>(options => { options.Cookie.IsEssential = true; });
+
+
+            services.AddAuthentication(
+                    x =>
+                    {
+                        x.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        x.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        x.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        x.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+            {
+                options.Events.OnRedirectToLogin = (evnt) =>
+                {
+                    var returnUrl = evnt.Request.Path;
+                    if (string.IsNullOrWhiteSpace(returnUrl) || returnUrl == "/") returnUrl = "/Home/Index";
+                    evnt.Response.Redirect("/Account/Login?ReturnUrl=" + returnUrl);
+                    return Task.CompletedTask;
+                };
+            });
+
+            services.AddSession(
+              options =>
+              {
+                  options.Cookie.HttpOnly = true;
+                  options.Cookie.SameSite = SameSiteMode.Strict;
+                  options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                  options.IdleTimeout = TimeSpan.FromMinutes(20);
+              }
+              );
+
+
+            services.AddKendo();
 
         }
 
@@ -115,7 +117,8 @@ namespace InventorySystemMysql
             app.UseRouting();
             app.UseCookiePolicy();
             app.UseAuthentication();
-            app.UseAuthorization(); 
+            app.UseAuthorization();
+            app.UseSession();
             app.UseNToastNotify();
             app.UseEndpoints(endpoints =>
             {

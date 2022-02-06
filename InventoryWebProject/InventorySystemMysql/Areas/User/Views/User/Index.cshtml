@@ -1,4 +1,4 @@
-﻿
+﻿@model List<UserIndexViewModel>
 @{
 
 }
@@ -7,52 +7,48 @@
         <div class="col-md-12">
             <div class="card  card-tasks">
                 <div class="card-header ">
-                    <h5 class="card-category">Category</h5>
+                    <h5 class="card-category">User</h5>
 
                 </div>
 
                 <div class="card-body ">
                     <div class="col-md-12">
-                        @(Html.Kendo().Grid<InventorySystemMysql.Areas.User.ViewModel.UserIndexViewModel>()
-                        .Name("grid")
-                        .Columns(columns =>
-                        {
-                            columns.Bound(p => p.Id).Width(150);
-                            columns.Bound(p => p.Name).Width(200);
-                            columns.Bound(p => p.UserName).Width(200);
-                            columns.Bound(p => p.MobileNumber).Width(200);
-                            columns.Bound(p => p.EmailAddress).Width(200);
-                            columns.Bound(p => p.Status).Width(100);
-                            columns.Command(command =>
-                            {
-                                command.Custom("edit").IconClass("k-icon k-i-edit").HtmlAttributes(new { @class = "k-primary" });
-                            }).Width(300).Title("Action");
-                        })
-                        .ToolBar(toolbar =>
-                        {
-                            toolbar.Custom().Name("Add").Text("Add").IconClass("k-icon k-i-add").HtmlAttributes(new { @class = "k-primary", href = Url.Action("Create", "User") });
-                            toolbar.Search();
-
-                        })
-                        .Search(search =>
-                        {
-                            search.Field(item => item.Name);
-                        })
-                        .Pageable(pageable => pageable
-                            .Refresh(true)
-                            .PageSizes(true)
-                            .PageSizes(new int[] { 10,20,50,100,1000,2000,5000})
-                            .ButtonCount(5))
-                        .Scrollable()
-                        .Sortable()
-                        .Filterable()
-                        .DataSource(dataSource => dataSource
-                            .Ajax()
-                            .PageSize(50)
-                            .Model(m => { m.Id(p => p.Id); })
-                            .Read(read => read.Action("Read", "User"))
-                        )
-                        )
+                        <div class=" form-group">
+                            <a class="btn btn-sm btn-info" asp-area="User" asp-controller="User" asp-action="Create"><i class="fa fa-plus"></i> Add</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="userTable" class="  table-bordered ">
+                                <thead>
+                                    <tr>
+                                        <th>S.No</th>
+                                        <th>Name</th>
+                                        <th>UserName</th>
+                                        <th>EmailAddress</th>
+                                        <th>MobileNumber</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td hidden> @item.Id</td>
+                                            <td> @item.SNo</td>
+                                            <td> @item.Name</td>
+                                            <td> @item.UserName</td>
+                                            <td> @item.EmailAddress</td>
+                                            <td> @item.MobileNumber</td>
+                                            <td> @item.Status</td>
+                                            <td>
+                                                <a class=" btn btn-info btn-sm">Edit</a>
+                                                <a asp-action="AssignRole" asp-route-userId="@item.Id" class=" btn btn-secondary btn-sm">Assign Role</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 <div class="card-footer ">
@@ -62,3 +58,11 @@
         </div>
     </div>
 </div>
+@section scripts
+{
+  
+    <script>
+        $('#userTable').dataTable({
+        });
+    </script>
+}

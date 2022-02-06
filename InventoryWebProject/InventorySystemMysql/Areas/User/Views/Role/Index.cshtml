@@ -1,4 +1,4 @@
-﻿@model IList<InventorySystemMysql.Areas.Inventory.ViewModels.Category.CategoryIndexViewModel>
+﻿@model List<RoleIndexViewModel>
 @{
 
 }
@@ -7,20 +7,20 @@
         <div class="col-md-12">
             <div class="card  card-tasks">
                 <div class="card-header ">
-                    <h5 class="card-category">Category</h5>
+                    <h5 class="card-category">Role</h5>
 
                 </div>
 
                 <div class="card-body ">
-                  <div class=" form-group">
-                      <a class="btn btn-sm btn-info" asp-area="Inventory" asp-controller="Category" asp-action="Create"><i class="fa fa-plus"></i> Add</a>
-                  </div>
-                        <table id="categoryTable" class="  table-bordered">
+                    <div class="col-md-12">
+                        <div class=" form-group">
+                            <a class="btn btn-sm btn-info" asp-area="User" asp-controller="Role" asp-action="Create"><i class="fa fa-plus"></i> Add</a>
+                        </div>
+                        <table id="roleTable" class="  table-bordered ">
                             <thead>
                                 <tr>
-                                    <th>Id</th>
+                                    <th>S.No</th>
                                     <th>Name</th>
-                                    <th>Status</th>
 
                                     <th>Action</th>
                                 </tr>
@@ -29,17 +29,18 @@
                                 @foreach (var item in Model)
                                 {
                                     <tr>
-                                        <td> @item.Id</td>
+                                        <td hidden> @item.Id</td>
+                                        <td > @item.Sno</td>
                                         <td> @item.Name</td>
-                                        <td> @item.Status</td>
                                         <td>
-                                            <a class=" btn btn-primary btn-sm">Edit</a>
+                                            <a class=" btn btn-info btn-sm">Edit</a>
+                                            <a class=" btn btn-secondary btn-sm"target="_blank" asp-area="User" asp-controller="Role" asp-action="AssignUser" asp-route-roleId="@item.Id">Assign User</a>
                                         </td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
-                   
+                    </div>
                 </div>
                 <div class="card-footer ">
 
@@ -50,8 +51,9 @@
 </div>
 @section scripts
 {
+
     <script>
-        $('#categoryTable').dataTable({
+        $('#roleTable').dataTable({
         });
     </script>
 }

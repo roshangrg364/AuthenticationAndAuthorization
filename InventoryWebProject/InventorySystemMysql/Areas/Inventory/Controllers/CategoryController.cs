@@ -2,8 +2,6 @@
 using InventoryModule.Repository;
 using InventoryModule.Service;
 using InventorySystemMysql.Areas.Inventory.ViewModels.Category;
-using Kendo.Mvc.Extensions;
-using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -35,38 +33,21 @@ namespace InventorySystemMysql.Areas.Inventory.Controllers
         }
         public async Task<IActionResult> Index()
         {
-           
-            return View();
-        }
-
-       
-        public async Task<IActionResult> Read([DataSourceRequest] DataSourceRequest request)
-        {
-            try
+            var categories = await _categoryRepo.GetAllAsync();
+            var categoryIndexModels = new List<CategoryIndexViewModel>();
+            foreach (var category in categories)
             {
-                var categories = await _categoryRepo.GetAllAsync();
-                var categoryIndexModels = new List<CategoryIndexViewModel>();
-                foreach (var category in categories)
+                categoryIndexModels.Add(new CategoryIndexViewModel
                 {
-                    categoryIndexModels.Add(new CategoryIndexViewModel
-                    {
-                        Id = category.Id,
-                        Name = category.Name,
-                        Status = category.Status
-                    });
-                }
-                return Json(await categoryIndexModels.ToDataSourceResultAsync(request));
+                    Id = category.Id,
+                    Name = category.Name,
+                    Status = category.Status
+                });
             }
-            catch (Exception ex)
-            {
-
-                _logger.LogError(ex, ex.Message);
-                return BadRequest(ex.Message);
-            }
-
+            return View(categoryIndexModels);
         }
 
-
+   
         public IActionResult Create()
         {
             return View();

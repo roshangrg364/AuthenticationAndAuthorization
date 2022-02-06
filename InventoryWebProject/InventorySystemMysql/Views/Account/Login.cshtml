@@ -14,10 +14,16 @@
                         <div class="form-group">
                             <label for="username" class="text-info">Username:</label><br>
                             <input type="text" asp-for="UserName" class="form-control">
+                            <span asp-validation-for="UserName" class=" text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label for="password" class="text-info">Password:</label><br>
                             <input type="password" asp-for="Password" class="form-control">
+                            <span asp-validation-for="Password" class=" text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="text-info">Remember me:</label><br>
+                            <input type="checkbox" asp-for="RememberMe" class="checkbox">
                         </div>
                         <div class="form-group">
                             <input type="submit" name="submit" class="btn btn-info btn-md" value="submit">
@@ -33,8 +39,9 @@
     </div>
 </div>
 <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
-<script src="~/assets/js/core/popper.min.js" asp-append-version="true"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.js" asp-append-version="true"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
+<script src="~/assets/js/core/popper.min.js" asp-append-version="true"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
 @await Component.InvokeAsync("NToastNotify")
 
@@ -44,7 +51,7 @@
         max-width: 600px;
         height: 320px;
         border: 1px solid #9C9C9C;
-        box-shadow:1px 1px 1px 1px gray;
+        box-shadow: 1px 1px 1px 1px gray;
         background-color: #EAEAEA;
     }
 

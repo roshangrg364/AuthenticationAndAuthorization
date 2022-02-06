@@ -17,21 +17,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
     <PackageReference Include="MySql.EntityFrameworkCore" Version="5.0.5" />
     <PackageReference Include="NToastNotify" Version="7.0.0" />
-	  <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.8.0" />
-	  <PackageReference Include="Telerik.DataSource" Version="2.0.6" />
-	  <PackageReference Include="Telerik.Documents.CMapUtils" Version="2020.3.1019" />
-	  <PackageReference Include="Telerik.Documents.Core" Version="2020.3.1019" />
-	  <PackageReference Include="Telerik.Documents.Fixed" Version="2020.3.1019" />
-	  <PackageReference Include="Telerik.Documents.Flow" Version="2020.3.1019" />
-	  <PackageReference Include="Telerik.Documents.Flow.FormatProviders.Pdf" Version="2020.3.1019" />
-	  <PackageReference Include="Telerik.Documents.ImageUtils" Version="2020.3.1019" />
-	  <PackageReference Include="Telerik.Documents.Spreadsheet" Version="2020.3.1019" />
-	  <PackageReference Include="Telerik.Documents.Spreadsheet.FormatProviders.OpenXml" Version="2020.3.1019" />
-	  <PackageReference Include="Telerik.Documents.Spreadsheet.FormatProviders.Pdf" Version="2020.3.1019" />
-	  <PackageReference Include="Telerik.Documents.Spreadsheet.FormatProviders.Xls" Version="2020.3.1019" />
-	  <PackageReference Include="Telerik.Documents.SpreadsheetStreaming" Version="2020.3.1019" />
-	  <PackageReference Include="telerik.ui.for.aspnet.core" Version="2020.3.1118" />
-	  <PackageReference Include="Telerik.Zip" Version="2020.3.1019" />
   </ItemGroup>
 
   <ItemGroup>

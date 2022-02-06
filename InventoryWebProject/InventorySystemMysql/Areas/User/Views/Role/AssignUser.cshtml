@@ -1,0 +1,43 @@
+﻿@model AssignRoleToUserIndexViewModel
+@{
+
+}
+<div class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card  card-tasks">
+                <div class="card-header ">
+                    <h5 class="card-category">Assign User</h5>
+
+                </div>
+
+                <div class="card-body ">
+                    <div class="col-md-12">
+                        <form asp-action="AssignUser" method="post">
+                            <input hidden asp-for="RoleId"/>
+                            <div class="form-group">
+                                Role : @Model.RoleName
+                                <input asp-for="RoleName" class="form-check" hidden/>
+                            </div> 
+                            @for (var i=0; i<Model.Users.Count;i++)
+                            {
+                                <div >
+                                    <div class=" form-group">
+                                        <input asp-for="@Model.Users[i].UserId" hidden />
+                                        <input asp-for="@Model.Users[i].IsSelected" readonly />
+                                        <input asp-for="@Model.Users[i].Name" readonly />
+                                    </div>
+                               </div>
+                                    }
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            </form>
+                   
+                    </div>
+                </div>
+                <div class="card-footer ">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

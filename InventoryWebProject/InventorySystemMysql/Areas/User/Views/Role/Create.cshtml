@@ -1,0 +1,29 @@
+﻿@model InventorySystemMysql.Areas.User.ViewModel.RoleViewModel
+@{
+
+}
+<div class="content">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card  card-tasks">
+                <div class="card-header ">
+                    <h5 class="card-category">Create</h5>
+                </div>
+                <div class="card-body ">
+                    <form method="post" enctype="multipart/form-data" asp-controller="Role" asp-area="User" asp-action="Create">
+                        <div class="form-group">
+                            <label class="required">Name</label>
+                            <input asp-for="RoleName" class="form-control" />
+                            <span asp-validation-for="RoleName" class="text-danger"></span>
+                        </div>
+                      
+                        <button type="submit" class=" btn btn-primary">Save</button>
+                    </form>
+                </div>
+                <div class="card-footer ">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

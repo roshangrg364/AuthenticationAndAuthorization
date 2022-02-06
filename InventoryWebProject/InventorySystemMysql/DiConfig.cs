@@ -33,11 +33,13 @@ namespace InventorySystemMysql
         private static void UserUserRepo(IServiceCollection services)
         {
             services.AddScoped<UserRepositoryInterface, UserRepository>();
+            services.AddScoped<RoleRepositoryInterface, RoleRepository>();
 
         }
         private static void UserUserService(IServiceCollection services)
         {
             services.AddScoped<UserServiceInterface, UserService>();
+            services.AddScoped<RoleServiceInterface, RoleService>();
         }
     }
 }
