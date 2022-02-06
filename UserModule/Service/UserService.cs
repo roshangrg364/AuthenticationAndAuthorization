@@ -33,11 +33,9 @@ namespace UserModule.Service
         {
             using var tx = TransactionScopeHelper.GetInstance();
             await ValidateUser(dto.MobileNumber, dto.EmailAddress);
-            var user = new User(dto.Name, dto.UserName, dto.Password,dto.EmailAddress, dto.MobileNumber);
-            // var hashPassword = crypter.HashPassword(dto.Password);
-            //  user.SetPassword(hashPassword);
-            await _userManager.CreateAsync(user);
-            //await _userRepo.InsertAsync(user).ConfigureAwait(false);
+            var user = new User(dto.Name, dto.UserName,dto.MobileNumber, dto.EmailAddress);
+            var result =await _userManager.CreateAsync(user,dto.Password);
+            if (!result.Succeeded) throw new Exception(result.Errors.ToString());
             tx.Complete();
         }
 

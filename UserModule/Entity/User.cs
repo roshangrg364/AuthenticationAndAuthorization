@@ -11,9 +11,8 @@ namespace UserModule.Entity
         {
                 
         }
-        public User(string name, string userName, string password,string mobile,string email) : base(userName) 
+        public User(string name, string userName, string mobile,string email) : base(userName) 
         {
-            PasswordHash = password;
             Name = name;
             Email = email;
             PhoneNumber = mobile;

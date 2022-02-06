@@ -23,6 +23,11 @@ namespace BaseModule.Repository.User
             return await GetQueryable().Where(a => a.Email == email).SingleOrDefaultAsync().ConfigureAwait(false);
         }
 
+        public async Task<UserModule.Entity.User> GetByIdString(string Id)
+        {
+            return await GetQueryable().Where(a => a.Id == Id).SingleOrDefaultAsync().ConfigureAwait(false);
+        }
+
         public async Task<UserModule.Entity.User> GetByMobile(string mobile)
         {
             return await  GetQueryable().Where(a => a.PhoneNumber == mobile).SingleOrDefaultAsync().ConfigureAwait(false);
