@@ -10,7 +10,9 @@
                     <h5 class="card-category">Create</h5>
                 </div>
                 <div class="card-body ">
+                    @Html.ValidationSummary();
                     <form method="post" enctype="multipart/form-data" asp-controller="User" asp-area="User" asp-action="Create">
+
                         <div class="form-group">
                             <label class="required">Name</label>
                             <input asp-for="Name" class="form-control" />
@@ -36,6 +38,7 @@
                             <input asp-for="EmailAddress" class="form-control" />
                             <span asp-validation-for="EmailAddress" class="text-danger"></span>
                         </div>
+
                         <button type="submit" class=" btn btn-primary">Save</button>
                     </form>
                 </div>

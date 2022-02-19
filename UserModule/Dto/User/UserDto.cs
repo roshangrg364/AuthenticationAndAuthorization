@@ -11,5 +11,6 @@ namespace UserModule.Dto.User
         public string Password { get; set; }
         public string EmailAddress { get; set; }
         public string MobileNumber { get; set; }
+        public string Type { get; set; }
     }
 }

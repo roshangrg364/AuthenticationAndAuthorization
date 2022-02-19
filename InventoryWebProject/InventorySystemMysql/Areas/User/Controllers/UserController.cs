@@ -17,7 +17,7 @@ using UserEntity = UserModule.Entity.User;
 namespace InventorySystemMysql.Areas.User.Controllers
 {
     [Area("User")]
-    [Authorize(Roles = "admin")]
+    
     public class UserController : Controller
     {
         private readonly UserRepositoryInterface _userRepo;
@@ -30,7 +30,7 @@ namespace InventorySystemMysql.Areas.User.Controllers
             IToastNotification notify,
             UserServiceInterface userService,
             ILogger<UserController> logger,
-            RoleManager<IdentityRole>  roleManager,
+            RoleManager<IdentityRole> roleManager,
             UserManager<UserEntity> userManager
             )
         {
@@ -41,6 +41,7 @@ namespace InventorySystemMysql.Areas.User.Controllers
             _roleManager = roleManager;
             _userManager = userManager;
         }
+       [Authorize(Policy ="User.View")]
         public async Task<IActionResult> Index()
         {
             var users = await _userRepo.GetAllAsync();
@@ -49,7 +50,7 @@ namespace InventorySystemMysql.Areas.User.Controllers
             foreach (var user in users)
             {
                 userIndexViewModels.Add(new UserIndexViewModel
-                {  
+                {
                     SNo = i,
                     Id = user.Id,
                     Name = user.Name,
@@ -63,7 +64,7 @@ namespace InventorySystemMysql.Areas.User.Controllers
             return View(userIndexViewModels);
         }
 
-       public IActionResult Create()
+        public IActionResult Create()
         {
             return View();
         }
@@ -78,7 +79,8 @@ namespace InventorySystemMysql.Areas.User.Controllers
                     EmailAddress = model.EmailAddress,
                     MobileNumber = model.MobileNumber,
                     Password = model.Password,
-                    UserName = model.UserName
+                    UserName = model.UserName,
+                    Type = UserModule.Entity.User.TypeGeneral
                 };
                 await _userService.Create(createDto);
                 _notify.AddSuccessToastMessage("created succesfuly");
@@ -87,7 +89,7 @@ namespace InventorySystemMysql.Areas.User.Controllers
             catch (Exception ex)
             {
                 _notify.AddErrorToastMessage(ex.Message);
-               
+
             }
             return RedirectToAction(nameof(Index));
         }
@@ -104,14 +106,15 @@ namespace InventorySystemMysql.Areas.User.Controllers
                     UserId = userId,
                     UserName = user.Name
                 };
-                foreach(var role in roles)
+                foreach (var role in roles)
                 {
-                    var roleModel = new RolesViewModel() { 
-                    RoleId = role.Id,
-                    RoleName= role.Name,
-                    IsSelected= false
+                    var roleModel = new RolesViewModel()
+                    {
+                        RoleId = role.Id,
+                        RoleName = role.Name,
+                        IsSelected = false
                     };
-                    if(await _userManager.IsInRoleAsync(user,role.Name) )
+                    if (await _userManager.IsInRoleAsync(user, role.Name))
                     {
                         roleModel.IsSelected = true;
                     }
@@ -134,19 +137,21 @@ namespace InventorySystemMysql.Areas.User.Controllers
         {
             try
             {
-                var user = await _userManager.FindByIdAsync(model.UserId).ConfigureAwait(false) ?? throw new UserNotFoundException();
-                foreach(var role in model.Roles)
+                var assignRoleDto = new AssignRoleDto
                 {
-                    var userRole = await _roleManager.FindByIdAsync(role.RoleId).ConfigureAwait(false) ?? throw new RoleNotFoundException();
-                    if(!await _userManager.IsInRoleAsync(user,userRole.Name) && role.IsSelected == true)
+                    UserId = model.UserId,
+                };
+                foreach (var roleModel in model.Roles)
+                {
+                    assignRoleDto.Roles.Add(new RolesDto
                     {
-                        await _userManager.AddToRoleAsync(user, userRole.Name);
-                    }
-                    if(await _userManager.IsInRoleAsync(user, userRole.Name) && role.IsSelected == false)
-                    {
-                        await _userManager.RemoveFromRoleAsync(user, userRole.Name);
-                    }
+                        Role = roleModel.RoleId,
+                        IsSelected = roleModel.IsSelected
+                    });
                 }
+                await _userService.AssignRole(assignRoleDto);
+                _notify.AddSuccessToastMessage("Roles Added Successfully");
+
             }
             catch (Exception ex)
             {

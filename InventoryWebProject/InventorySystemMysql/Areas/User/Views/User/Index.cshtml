@@ -1,4 +1,6 @@
 ﻿@model List<UserIndexViewModel>
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService _authorizationService
 @{
 
 }
@@ -14,7 +16,10 @@
                 <div class="card-body ">
                     <div class="col-md-12">
                         <div class=" form-group">
-                            <a class="btn btn-sm btn-info" asp-area="User" asp-controller="User" asp-action="Create"><i class="fa fa-plus"></i> Add</a>
+                          
+                                <a class="btn btn-sm btn-info" asp-area="User" asp-controller="User" asp-action="Create"><i class="fa fa-plus"></i> Add</a>
+                         
+
                         </div>
                         <div class="table-responsive">
                             <table id="userTable" class="  table-bordered ">

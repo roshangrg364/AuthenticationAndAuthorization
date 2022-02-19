@@ -3,10 +3,13 @@
     Layout = null;
 }
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous" asp-append-version="true">
 <div id="login">
+
     <h3 class="text-center text-white">Login form</h3>
     <div class="container">
         <div id="login-row" class="row justify-content-center ">
+            @Html.ValidationSummary();
             <div id="login-column" class="col-md-6">
                 <div id="login-box" class="col-md-12">
                     <form class="form" action="Login" method="post">
@@ -30,8 +33,25 @@
                         </div>
                         <input type="text" hidden asp-for="ReturnUrl" />
                         <div id="register-link" class="text-right">
-                            <a href="#" class="text-info">Register here</a>
+                            <a asp-area="" asp-controller="UserRegistration" asp-action="Register" class="text-info">Register here</a>
                         </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="login-column" class="col-md-3">
+                <div id="login-box" class="col-md-12">
+                    <h4>Also Login With</h4>
+                    <form method="post" asp-action="ExternalLogin" asp-route-ReturnUrl="@Model.ReturnUrl">
+                        @if (Model.ExternalProviders.Any())
+                        {
+                            foreach (var provider in Model.ExternalProviders)
+                            {
+                                <div class="form-group">
+                                    <button type="submit" value="@provider.Name" class="btn btn-success" title="Login with @provider.DisplayName" name="provider"><i class="fa-brands fa-google"></i>@provider.Name</button>
+                                </div>
+                            }
+                        }
                     </form>
                 </div>
             </div>
@@ -56,7 +76,7 @@
     }
 
         #login .container #login-row #login-column #login-box #login-form {
-            padding: 20px;
+            padding: 5px;
         }
 
             #login .container #login-row #login-column #login-box #login-form #register-link {

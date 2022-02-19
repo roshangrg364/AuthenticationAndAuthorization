@@ -1,0 +1,21 @@
+{
+  "ConnectionStrings": {
+    "Default": "Server=localhost;Database='';Uid='';Pwd='';Convert Zero Datetime=True; SSL Mode=0"
+  },
+  "Google": {
+    "ClientId": "",
+    "ClientSecret": ""
+  },
+  "Facebook": {
+    "ClientId":"" 
+    "ClientSecret": ""
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*"
+}

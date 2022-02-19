@@ -28,6 +28,11 @@ namespace BaseModule.Mapping.User
                   .Property(a => a.Status)
                   .HasMaxLength(100)
                   .IsRequired();
+            builder
+               .ToTable("AspNetUsers")
+                 .Property(a => a.Type)
+                 .HasMaxLength(100)
+                 .IsRequired();
         }
     }
 }

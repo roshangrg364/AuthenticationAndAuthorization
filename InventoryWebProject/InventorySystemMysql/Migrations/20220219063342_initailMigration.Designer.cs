@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InventorySystemMysql.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220119162806_AddIdentityUpdate")]
-    partial class AddIdentityUpdate
+    [Migration("20220219063342_initailMigration")]
+    partial class initailMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -255,6 +255,11 @@ namespace InventorySystemMysql.Migrations
                         .HasColumnType("varchar(100)");
 
                     b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");

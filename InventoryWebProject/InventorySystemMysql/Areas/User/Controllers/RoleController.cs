@@ -1,4 +1,5 @@
 ﻿using InventorySystemMysql.Areas.User.ViewModel;
+using InventorySystemMysql.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,9 +9,11 @@ using NToastNotify;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using UserModule.Dto.Role;
 using UserModule.Exceptions;
+using UserModule.PermissionHandler;
 using UserModule.Repository;
 using UserModule.Service;
 
@@ -93,7 +96,7 @@ namespace InventorySystemMysql.Areas.User.Controllers
                     var userModel = new AssignRoleToUserViewModel
                     {
                         UserId = user.Id,
-                        Name = user.Name
+                        Name = user.UserName
                     };
                   
                     if( await _userManager.IsInRoleAsync(user, role.Name))
@@ -179,6 +182,70 @@ namespace InventorySystemMysql.Areas.User.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<IActionResult> AssignPermission(string roleId)
+        {
+            try
+            {
+
+                var role = await _roleManager.FindByIdAsync(roleId) ?? throw new RoleNotFoundException();
+                var roleClaims = await _roleManager.GetClaimsAsync(role);
+                var permissionIndexModel = new RolePermissionViewModel() { 
+                RoleId = roleId,
+                RoleName = role.Name
+                };
+
+                foreach(var claim in Permission.Permissions)
+                {
+                    var claimModel = new AssignPermissionViewModel {
+                    Permission = claim
+                    };
+                    if(roleClaims.Any(a=>a.Value == claim))
+                    {
+                        claimModel.IsSelected = true;
+                    }
+                    permissionIndexModel.Permissions.Add(claimModel);
+                }
+                return View(permissionIndexModel);
+            }
+            catch (Exception ex)
+            {
+                _notify.AddErrorToastMessage(ex.Message);
+                _logger.LogError(ex, ex.Message);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        [HttpPost]
+        public async Task<IActionResult> AssignPermission(RolePermissionViewModel model)
+        {
+            try
+            {
+                var role = await _roleManager.FindByIdAsync(model.RoleId) ?? throw new RoleNotFoundException();
+                var claims = await _roleManager.GetClaimsAsync(role);
+                foreach(var claim in claims)
+                {
+                    var result = await _roleManager.RemoveClaimAsync(role, claim);
+                    if (!result.Succeeded) throw new Exception("Error in setting permission");
+                }
+                foreach(var permission in model.Permissions)
+                {
+                    if(permission.IsSelected == true)
+                    {
+                        await _roleManager.AddClaimAsync(role, new Claim(Permission.PermissionClaimType,permission.Permission));
+                    }
+                }
+
+               
+              
+            }
+            catch (Exception ex)
+            {
+                _notify.AddErrorToastMessage(ex.Message);
+                _logger.LogError(ex, ex.Message);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        
 
     }
 }

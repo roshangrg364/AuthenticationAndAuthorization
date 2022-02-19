@@ -25,7 +25,7 @@ namespace BaseModule.DbContextConfig
         {
             base.OnModelCreating(modelBuilder);
             #region inventorymapping
-            modelBuilder.ApplyConfiguration(new CategoryMapping());
+            modelBuilder.ApplyConfiguration(new CategoryMapping()); 
             #endregion
 
             #region userMapping

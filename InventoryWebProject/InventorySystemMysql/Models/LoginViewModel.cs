@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authentication;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,5 +16,7 @@ namespace InventorySystemMysql.Models
         public string Password { get; set; }
         public bool RememberMe { get; set; }
         public string ReturnUrl { get; set; } = "/Home/Index";
+
+        public IList<AuthenticationScheme> ExternalProviders { get; set; } = new List<AuthenticationScheme>();
     }
 }

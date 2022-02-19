@@ -4,7 +4,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace InventorySystemMysql.Migrations
 {
-    public partial class AddIdentityUpdate : Migration
+    public partial class initailMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -31,6 +31,7 @@ namespace InventorySystemMysql.Migrations
                     Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime", nullable: true),
                     Status = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
+                    Type = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
                     UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true),

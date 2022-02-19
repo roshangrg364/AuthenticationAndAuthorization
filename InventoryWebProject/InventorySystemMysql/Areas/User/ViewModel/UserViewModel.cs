@@ -34,6 +34,7 @@ namespace InventorySystemMysql.Areas.User.ViewModel
         [Phone]
         [DataType(DataType.PhoneNumber,ErrorMessage ="Invalid mobile number")]
         public string MobileNumber { get; set; }
+       
     }
 
     public class AssignRoleViewModel

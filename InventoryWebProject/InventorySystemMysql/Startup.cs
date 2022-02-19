@@ -1,5 +1,6 @@
 
 using BaseModule.DbContextConfig;
+using InventorySystemMysql.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -21,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UserModule.Entity;
+using UserModule.PermissionHandler;
 
 namespace InventorySystemMysql
 {
@@ -49,6 +51,8 @@ namespace InventorySystemMysql
                 options.Password.RequireUppercase = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = 4;
+                options.Password.RequireDigit = false;
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
             }
             );
@@ -62,9 +66,21 @@ namespace InventorySystemMysql
              {
                  var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                  options.Filters.Add(new AuthorizeFilter(policy));
+
              })
             .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null) ;
 
+            services.AddAuthentication()
+                 .AddGoogle(options =>
+                 {
+                     options.ClientId = Configuration["Google:ClientId"];
+                     options.ClientSecret = Configuration["Google:ClientSecret"];
+                 })
+                 .AddFacebook(options=>
+                 {
+                     options.AppId = Configuration["Facebook:ClientId"];
+                     options.AppSecret = Configuration["Facebook:ClientSecret"];
+                 });
             services.UseInventoryDiConfig();
 
             services.Configure<CookiePolicyOptions>(
@@ -72,17 +88,17 @@ namespace InventorySystemMysql
                 {
                     // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                     options.CheckConsentNeeded = context => true;
-                    options.MinimumSameSitePolicy = SameSiteMode.None;
+                    options.MinimumSameSitePolicy = SameSiteMode.Lax;
                 }
             );
-
-           services.Configure<CookieTempDataProviderOptions>(options => { options.Cookie.IsEssential = true; });
+          
+        
             services.ConfigureApplicationCookie(options =>
              {
                  // Cookie settings
                  options.Cookie.HttpOnly = true;
                  options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-                 options.Cookie.SameSite = SameSiteMode.Strict;
+                 options.Cookie.SameSite = SameSiteMode.Lax;
                  options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                  options.Events.OnRedirectToLogin = (evnt) =>
                      {
@@ -91,9 +107,18 @@ namespace InventorySystemMysql
                          evnt.Response.Redirect("/Account/Login?ReturnUrl=" + returnUrl);
                          return Task.CompletedTask;
                      };
-                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                 options.AccessDeniedPath = "/AccessDenied/Index";
                  options.SlidingExpiration = true;
              });
+
+          
+            services.AddAuthorization(options => {
+                foreach(var permission in Permission.Permissions)
+                { 
+                options.AddPolicy(permission, policy => policy.Requirements.Add(new PermissionRequirement(permission)));
+                }
+            });
+            services.AddTransient<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
         }
 
@@ -115,6 +140,7 @@ namespace InventorySystemMysql
             app.UseRouting();
             app.UseCookiePolicy();
             app.UseAuthentication();
+    
             app.UseAuthorization(); 
             app.UseNToastNotify();
             app.UseEndpoints(endpoints =>

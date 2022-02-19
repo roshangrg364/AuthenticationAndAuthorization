@@ -9,9 +9,11 @@ namespace UserModule.Service
   public  interface UserServiceInterface
     {
         Task Create(UserDto dto);
+        Task CreateUserForExternalLogin(UserDto dto);
         Task Update(UserDto dto);
         Task Activate(long id);
         Task Deactivate(long id);
+        Task AssignRole(AssignRoleDto dto);
 
        
     }

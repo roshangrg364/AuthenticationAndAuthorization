@@ -15,10 +15,14 @@ namespace UserModule.Service
     {
         private readonly UserRepositoryInterface _userRepo;
         private readonly UserManager<User> _userManager;
-        public UserService(UserRepositoryInterface userRepo, UserManager<User> userManager)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public UserService(UserRepositoryInterface userRepo,
+            UserManager<User> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _userRepo = userRepo;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
         public async Task Activate(long id)
         {
@@ -29,13 +33,66 @@ namespace UserModule.Service
             tx.Complete();
         }
 
+        public async Task AssignRole(AssignRoleDto dto)
+        {
+            using var tx = TransactionScopeHelper.GetInstance();
+            var user = await _userManager.FindByIdAsync(dto.UserId).ConfigureAwait(false) ?? throw new UserNotFoundException();
+            foreach (var role in dto.Roles)
+            {
+                var userRole = await _roleManager.FindByIdAsync(role.Role).ConfigureAwait(false) ?? throw new RoleNotFoundException();
+                if (!await _userManager.IsInRoleAsync(user, userRole.Name) && role.IsSelected == true)
+                {
+                    await _userManager.AddToRoleAsync(user, userRole.Name);
+                }
+                if (await _userManager.IsInRoleAsync(user, userRole.Name) && role.IsSelected == false)
+                {
+                    await _userManager.RemoveFromRoleAsync(user, userRole.Name);
+                }
+            }
+            tx.Complete();
+        }
+
         public async Task Create(UserDto dto)
         {
             using var tx = TransactionScopeHelper.GetInstance();
             await ValidateUser(dto.MobileNumber, dto.EmailAddress);
-            var user = new User(dto.Name, dto.UserName,dto.MobileNumber, dto.EmailAddress);
+            var user = new User(dto.UserName, dto.EmailAddress,dto.Type) { 
+            PhoneNumber = dto.MobileNumber,
+            Name = dto.Name
+            };
             var result =await _userManager.CreateAsync(user,dto.Password);
-            if (!result.Succeeded) throw new Exception(result.Errors.ToString());
+            if (!result.Succeeded) {
+                var errors = "";
+                foreach (var error in result.Errors)
+                {
+                   errors = errors +"_" + error.Description;
+                }
+                throw new Exception(errors);
+            }
+          
+            tx.Complete();
+        }
+
+        public async Task CreateUserForExternalLogin(UserDto dto)
+        {
+            using var tx = TransactionScopeHelper.GetInstance();
+            await ValidateUser(dto.MobileNumber, dto.EmailAddress);
+            var user = new User(dto.UserName, dto.EmailAddress,User.TypeExternal)
+            {
+                PhoneNumber = dto.MobileNumber,
+                Name = dto.Name
+            };
+            var result = await _userManager.CreateAsync(user);
+            if (!result.Succeeded)
+            {
+                var errors = "";
+                foreach (var error in result.Errors)
+                {
+                    errors = errors + "_" + error.Description;
+                }
+                throw new Exception(errors);
+            }
+
             tx.Complete();
         }
 

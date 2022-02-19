@@ -257,6 +257,11 @@ namespace InventorySystemMysql.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
                     b.ToTable("AspNetUsers");
 
                     b.HasDiscriminator().HasValue("User");
