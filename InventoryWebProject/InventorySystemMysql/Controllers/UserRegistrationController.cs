@@ -59,7 +59,12 @@ namespace InventorySystemMysql.Controllers
                 };
                 await _userService.Create(createDto);
                 _notify.AddSuccessToastMessage("created succesfuly");
-             
+                var user = await _userManager.FindByNameAsync(model.Name).ConfigureAwait(true);
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+                _logger.Log(LogLevel.Warning, confirmationLink);
+                return RedirectToAction(nameof(Success));
+              
             }
             catch (Exception ex)
             {
@@ -67,6 +72,11 @@ namespace InventorySystemMysql.Controllers
                 _notify.AddErrorToastMessage(ex.Message);
             }
             return RedirectToAction("Login", "Account");
+        }
+
+        public IActionResult Success()
+        {
+            return View();
         }
     }
 }

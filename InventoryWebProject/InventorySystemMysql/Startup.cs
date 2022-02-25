@@ -44,7 +44,8 @@ namespace InventorySystemMysql
                 options.UseLazyLoadingProxies().UseMySQL(Configuration.GetConnectionString("Default"), b => b.MigrationsAssembly("InventorySystemMysql"));
             });
             services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<MyDbContext>();
+                .AddEntityFrameworkStores<MyDbContext>()
+                .AddDefaultTokenProviders();    
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -54,6 +55,7 @@ namespace InventorySystemMysql
                 options.Password.RequiredLength = 4;
                 options.Password.RequireDigit = false;
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.SignIn.RequireConfirmedEmail = true;
             }
             );
             services.AddMvc().AddNToastNotifyToastr(new ToastrOptions()

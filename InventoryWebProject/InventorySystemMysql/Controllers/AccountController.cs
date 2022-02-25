@@ -33,7 +33,7 @@ namespace InventorySystemMysql.Controllers
             IToastNotification notify,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            UserServiceInterface userService) 
+            UserServiceInterface userService)
         {
             _logger = logger;
             _userRepo = userRepo;
@@ -42,9 +42,10 @@ namespace InventorySystemMysql.Controllers
             _signInManager = signInManager;
             _userService = userService;
         }
-        public async  Task<IActionResult> Login(string ReturnUrl = "/Home/Index")
+        public async Task<IActionResult> Login(string ReturnUrl = "/Home/Index")
         {
-            var loginModel = new LoginViewModel() {
+            var loginModel = new LoginViewModel()
+            {
                 ReturnUrl = ReturnUrl,
                 ExternalProviders = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
             };
@@ -57,27 +58,32 @@ namespace InventorySystemMysql.Controllers
         {
             try
             {
-            if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
-                    
-                        var user = await _userManager.FindByNameAsync(model.UserName) ?? throw new Exception("Incorrect UserName or Password");
-                        var IsPasswordCorrect = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
-                        if (!IsPasswordCorrect.Succeeded) throw new Exception("Incorrect UserName or Password");
+
+                    var user = await _userManager.FindByNameAsync(model.UserName) ?? throw new Exception("Incorrect UserName or Password");
+                    var IsPasswordCorrect = await _userManager.CheckPasswordAsync(user, model.Password);
+                    if (!IsPasswordCorrect) throw new Exception("Incorrect UserName or Password");
+                    if (!user.EmailConfirmed)
+                    {
+                        throw new Exception("Email not Confirmed");
+                    }
+                    await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
                     _notify.AddSuccessToastMessage("Logged In Successfully");
                     if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                     {
                         return LocalRedirect(model.ReturnUrl);
                     }
                     return RedirectToAction("Index", "Home");
-                    }
-               
+                }
+
 
             }
             catch (Exception ex)
             {
                 _notify.AddErrorToastMessage(ex.Message);
                 _logger.LogError(ex, ex.Message);
-               
+
             }
             return RedirectToAction(nameof(Login));
         }
@@ -91,12 +97,12 @@ namespace InventorySystemMysql.Controllers
         }
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> ExternalLogin(string provider,string ReturnUrl)
+        public async Task<IActionResult> ExternalLogin(string provider, string ReturnUrl)
         {
             try
             {
                 var redirectUrl = Url.Action("ExternalLoginCallBack", "Account", new { ReturnUrl = ReturnUrl });
-                var properties =  _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+                var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
                 return new ChallengeResult(provider, properties);
             }
             catch (Exception ex)
@@ -107,7 +113,7 @@ namespace InventorySystemMysql.Controllers
             return RedirectToAction(nameof(Login));
         }
 
-        public async Task<IActionResult> ExternalLoginCallBack(string ReturnUrl =null,string error = null)
+        public async Task<IActionResult> ExternalLoginCallBack(string ReturnUrl = null, string error = null)
         {
             var loginModel = new LoginViewModel
             {
@@ -117,31 +123,39 @@ namespace InventorySystemMysql.Controllers
             try
             {
                 ReturnUrl = ReturnUrl ?? Url.Content("~/");
-               
-                if(error !=null)
+
+                if (error != null)
                 {
                     ModelState.AddModelError(string.Empty, "error from external login:" + error);
-                    return View(nameof(Login),loginModel);
+                    return View(nameof(Login), loginModel);
                 }
                 var externalLoginInfo = await _signInManager.GetExternalLoginInfoAsync();
                 if (externalLoginInfo == null)
                 {
                     ModelState.AddModelError(string.Empty, "error loading external login information");
-                    return View(nameof(Login),loginModel);
+                    return View(nameof(Login), loginModel);
                 }
-
-               var externalLoginResult= await _signInManager.ExternalLoginSignInAsync(externalLoginInfo.LoginProvider, externalLoginInfo.ProviderKey, false, true);
+                var email = externalLoginInfo.Principal.FindFirstValue(ClaimTypes.Email);
+                UserModule.Entity.User user = null;
+                if (email != null)
+                {
+                    user = await _userManager.FindByEmailAsync(email);
+                    if (user != null && !user.EmailConfirmed)
+                    {
+                        throw new Exception("Email Not Confirmed yet");
+                    }
+                }
+                var externalLoginResult = await _signInManager.ExternalLoginSignInAsync(externalLoginInfo.LoginProvider, externalLoginInfo.ProviderKey, false, true);
                 if (externalLoginResult.Succeeded)
                 {
                     return LocalRedirect(ReturnUrl);
                 }
                 else
                 {
-                    var email = externalLoginInfo.Principal.FindFirstValue(ClaimTypes.Email);
+
                     if (email != null)
                     {
 
-                        var user = await _userManager.FindByEmailAsync(email);
                         if (user == null)
                         {
                             var userDto = new UserDto
@@ -165,8 +179,30 @@ namespace InventorySystemMysql.Controllers
                 _notify.AddErrorToastMessage(ex.Message);
                 _logger.LogError(ex, ex.Message);
             }
-          
+
             return RedirectToAction(nameof(Login), loginModel);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId).ConfigureAwait(true) ?? throw new UserNotFoundException();
+                var isConfirmed = await _userManager.ConfirmEmailAsync(user, token);
+                if (isConfirmed.Succeeded)
+                {
+                    _notify.AddSuccessToastMessage("Email Confirmed Successfully");
+                    return RedirectToAction(nameof(Login));
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                _notify.AddSuccessToastMessage(ex.Message);
+            }
+            
+            return RedirectToAction(nameof(Login));
         }
     }
 }

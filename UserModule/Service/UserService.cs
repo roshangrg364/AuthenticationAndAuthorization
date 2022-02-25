@@ -108,6 +108,7 @@ namespace UserModule.Service
 
         private async Task ValidateUser(string mobile,string email, User? user = null)
         {
+            if (string.IsNullOrWhiteSpace(mobile) || string.IsNullOrWhiteSpace(email)) return;
             var userWithSameMobile = await _userRepo.GetByMobile(mobile).ConfigureAwait(false);
             if (userWithSameMobile != null && user != userWithSameMobile) throw new Exception("User With Same Number Already Exists");
                 var userWithSameEmail = await _userRepo.GetByEmail(email).ConfigureAwait(false);

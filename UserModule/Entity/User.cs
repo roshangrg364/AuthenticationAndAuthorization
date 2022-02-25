@@ -33,6 +33,7 @@ namespace UserModule.Entity
         public string Status { get; protected set; }
         public string Type { get; set; }
         public bool IsActive => Status == StatusActive;
+        public bool IsSuperAdmin => Status == TypeSuperAdmin;
         public void Activate() => Status = StatusActive;
         public void Deactivate() => Status = StatusInactive;
 
