@@ -61,7 +61,7 @@ namespace InventorySystemMysql.Controllers
                 _notify.AddSuccessToastMessage("created succesfuly");
                 var user = await _userManager.FindByNameAsync(model.Name).ConfigureAwait(true);
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+                var confirmationLink = Url.Action("ConfirmEmail", "Account", new { email = user.Email, token = token }, Request.Scheme);
                 _logger.Log(LogLevel.Warning, confirmationLink);
                 return RedirectToAction(nameof(Success));
               

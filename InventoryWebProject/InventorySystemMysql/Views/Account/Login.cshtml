@@ -28,12 +28,15 @@
                             <label for="password" class="text-info">Remember me:</label><br>
                             <input type="checkbox" asp-for="RememberMe" class="checkbox">
                         </div>
+                        <div id="register-link" class="text-right">
+                            <a asp-area="" asp-controller="UserRegistration" asp-action="Register" class="text-info">Register here</a>
+                                                  </div>
                         <div class="form-group">
                             <input type="submit" name="submit" class="btn btn-info btn-md" value="submit">
                         </div>
                         <input type="text" hidden asp-for="ReturnUrl" />
-                        <div id="register-link" class="text-right">
-                            <a asp-area="" asp-controller="UserRegistration" asp-action="Register" class="text-info">Register here</a>
+                        <div  class="text-right">
+                            <a asp-area="" asp-controller="Account" asp-action="ForgotPassword" class="text-info">Forgot Password...?</a>
                         </div>
                     </form>
                 </div>
@@ -69,7 +72,7 @@
     #login .container #login-row #login-column #login-box {
         margin-top: 100px;
         max-width: 600px;
-        height: 320px;
+        height: 350px;
         border: 1px solid #9C9C9C;
         box-shadow: 1px 1px 1px 1px gray;
         background-color: #EAEAEA;

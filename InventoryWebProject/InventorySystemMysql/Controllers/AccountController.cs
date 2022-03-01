@@ -165,6 +165,10 @@ namespace InventorySystemMysql.Controllers
                             };
                             await _userService.CreateUserForExternalLogin(userDto);
                             user = await _userManager.FindByEmailAsync(email) ?? throw new UserNotFoundException();
+                            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                            var confirmationLink = Url.Action("ConfirmEmail", "Account", new { email = user.Email, token = token }, Request.Scheme);
+                            _logger.Log(LogLevel.Warning, confirmationLink);
+                            return RedirectToAction("Success","UserRegistration");
                         }
                         await _userManager.AddLoginAsync(user, externalLoginInfo);
                         await _signInManager.SignInAsync(user, isPersistent: false);
@@ -184,11 +188,11 @@ namespace InventorySystemMysql.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        public async Task<IActionResult> ConfirmEmail(string email, string token)
         {
             try
             {
-                var user = await _userManager.FindByIdAsync(userId).ConfigureAwait(true) ?? throw new UserNotFoundException();
+                var user = await _userManager.FindByEmailAsync(email).ConfigureAwait(true) ?? throw new UserNotFoundException();
                 var isConfirmed = await _userManager.ConfirmEmailAsync(user, token);
                 if (isConfirmed.Succeeded)
                 {
@@ -202,6 +206,89 @@ namespace InventorySystemMysql.Controllers
                 _notify.AddSuccessToastMessage(ex.Message);
             }
             
+            return RedirectToAction(nameof(Login));
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword()
+        {
+            return View();
+        }
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email).ConfigureAwait(true) ?? throw new UserNotFoundException();
+                if (user != null && user.EmailConfirmed)
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait(true);
+                    var resetPasswordLink = Url.Action("ResetPassword", "Account", new { email = model.Email, token = token }, Request.Scheme);
+                    _logger.Log(LogLevel.Information, resetPasswordLink);
+                    return View(nameof(ForgotPasswordConfirmation));
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                _notify.AddSuccessToastMessage(ex.Message);
+            }
+            return View(model);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPasswordConfirmation()
+        {
+
+            return View();
+          
+        }
+        [AllowAnonymous]
+      
+        public async Task<IActionResult> ResetPassword(string email, string token)
+        {
+            try
+            {
+                if(string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(token))
+                {
+                    throw new Exception("Invalid email or token");
+                }
+                var resetPasswordViewModel = new ResetPasswordViewModel() { 
+                Token =token,
+                Email =email
+                };
+                return View(resetPasswordViewModel);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex, ex.Message);
+                _notify.AddSuccessToastMessage(ex.Message);
+            }
+            return RedirectToAction(nameof(Login));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var user = await _userManager.FindByEmailAsync(model.Email).ConfigureAwait(true) ?? throw new UserNotFoundException();
+                  var isResetSuccessfull = await  _userManager.ResetPasswordAsync(user, model.Token, model.Password).ConfigureAwait(true);
+                    if(isResetSuccessfull.Succeeded)
+                    {
+                        _notify.AddSuccessToastMessage("Password Reset Successfull");
+                        return RedirectToAction(nameof(Login));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                _notify.AddSuccessToastMessage(ex.Message);
+            }
             return RedirectToAction(nameof(Login));
         }
     }
