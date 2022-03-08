@@ -1,6 +1,7 @@
 
 using BaseModule.DbContextConfig;
 using InventorySystemMysql.CustomTokenProvider;
+using InventorySystemMysql.Extensions;
 using InventorySystemMysql.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -150,6 +151,7 @@ namespace InventorySystemMysql
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            ServiceActivator.Configure(app.ApplicationServices);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();

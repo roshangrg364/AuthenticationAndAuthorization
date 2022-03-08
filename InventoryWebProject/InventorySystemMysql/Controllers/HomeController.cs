@@ -1,4 +1,5 @@
 ﻿
+using InventorySystemMysql.Extensions;
 using InventorySystemMysql.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,9 +25,10 @@ namespace InventorySystemMysql.Controllers
             _notify = notify;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
+           
         }
 
         public IActionResult Privacy()
