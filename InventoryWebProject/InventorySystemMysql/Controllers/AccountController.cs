@@ -62,19 +62,27 @@ namespace InventorySystemMysql.Controllers
                 {
 
                     var user = await _userManager.FindByNameAsync(model.UserName) ?? throw new Exception("Incorrect UserName or Password");
-                    var IsPasswordCorrect = await _userManager.CheckPasswordAsync(user, model.Password);
-                    if (!IsPasswordCorrect) throw new Exception("Incorrect UserName or Password");
+                   // var IsPasswordCorrect = await _userManager.CheckPasswordAsync(user, model.Password);
+                    //if (!IsPasswordCorrect) throw new Exception("Incorrect UserName or Password");
                     if (!user.EmailConfirmed)
                     {
                         throw new Exception("Email not Confirmed");
                     }
-                    await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
-                    _notify.AddSuccessToastMessage("Logged In Successfully");
-                    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                  var isSucceeded =  await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
+                    if (isSucceeded.Succeeded)
                     {
-                        return LocalRedirect(model.ReturnUrl);
+                        _notify.AddSuccessToastMessage("Logged In Successfully");
+                        if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                        {
+                            return LocalRedirect(model.ReturnUrl);
+                        }
+                        return RedirectToAction("Index", "Home");
                     }
-                    return RedirectToAction("Index", "Home");
+                    if(isSucceeded.IsLockedOut)
+                    {
+                        return RedirectToAction(nameof(LockOut));
+                    }
+                  
                 }
 
 
@@ -88,7 +96,10 @@ namespace InventorySystemMysql.Controllers
             return RedirectToAction(nameof(Login));
         }
 
-
+        public IActionResult LockOut()
+        {
+            return View();
+        }
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
@@ -279,6 +290,10 @@ namespace InventorySystemMysql.Controllers
                   var isResetSuccessfull = await  _userManager.ResetPasswordAsync(user, model.Token, model.Password).ConfigureAwait(true);
                     if(isResetSuccessfull.Succeeded)
                     {
+                        if(await _userManager.IsLockedOutAsync(user))
+                        {
+                         await   _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.Now);
+                        }
                         _notify.AddSuccessToastMessage("Password Reset Successfull");
                         return RedirectToAction(nameof(Login));
                     }

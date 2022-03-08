@@ -1,5 +1,6 @@
 
 using BaseModule.DbContextConfig;
+using InventorySystemMysql.CustomTokenProvider;
 using InventorySystemMysql.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -28,6 +29,7 @@ namespace InventorySystemMysql
 {
     public class Startup
     {
+        private const string CustomEmailTokenProvider = "Email_Token_Provider";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -45,7 +47,8 @@ namespace InventorySystemMysql
             });
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<MyDbContext>()
-                .AddDefaultTokenProviders();    
+                .AddDefaultTokenProviders()
+                .AddTokenProvider<CustomEmailTokenProvider<User>>(CustomEmailTokenProvider);    
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -56,8 +59,18 @@ namespace InventorySystemMysql
                 options.Password.RequireDigit = false;
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.SignIn.RequireConfirmedEmail = true;
+                options.Tokens.EmailConfirmationTokenProvider = CustomEmailTokenProvider;
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
             }
             );
+
+            services.Configure<DataProtectionTokenProviderOptions>(options =>
+            {
+                options.TokenLifespan = TimeSpan.FromMinutes(30);
+            });
+
+            services.Configure<CustomEmailTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromHours(5));
             services.AddMvc().AddNToastNotifyToastr(new ToastrOptions()
             {
                 ProgressBar = true,
