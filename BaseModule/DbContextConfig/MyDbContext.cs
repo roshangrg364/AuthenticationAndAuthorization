@@ -1,4 +1,6 @@
 ﻿
+using BaseModule.AuditManagement;
+using BaseModule.Mapping.AuditMapping;
 using BaseModule.Mapping.InventoryMapping;
 using BaseModule.Mapping.User;
 using InventoryModule.Entity;
@@ -11,15 +13,15 @@ using UserModule.Entity;
 
 namespace BaseModule.DbContextConfig
 {
-    public class MyDbContext:IdentityDbContext
+    public partial class MyDbContext:IdentityDbContext
     {
         public MyDbContext(DbContextOptions<MyDbContext> options) : base(options)
         {
 
         }
-        #region Inventory
-        public DbSet<Category> Category { get; set; }
-        #endregion
+        //#region Inventory
+        //public DbSet<Category> Category { get; set; }
+        //#endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,6 +34,15 @@ namespace BaseModule.DbContextConfig
             modelBuilder.ApplyConfiguration(new UserEntityMapping());
             #endregion
 
+            #region audit
+            modelBuilder.ApplyConfiguration(new AuditEntityMapping());
+            #endregion
+
         }
     }
+
+    public partial class MyDbContext : IdentityDbContext
+    { 
+    }
+
 }
