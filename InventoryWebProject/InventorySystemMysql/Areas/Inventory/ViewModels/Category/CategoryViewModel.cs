@@ -7,7 +7,7 @@ namespace InventorySystemMysql.Areas.Inventory.ViewModels.Category
 {
     public class CategoryViewModel
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
     }
 }

@@ -33,7 +33,7 @@
                                         <td> @item.Name</td>
                                         <td> @item.Status</td>
                                         <td>
-                                            <a class=" btn btn-primary btn-sm">Edit</a>
+                                            <a class=" btn btn-primary btn-sm"asp-area="Inventory" asp-controller="Category" asp-action="Update" asp-route-categoryId="@item.Id">Edit</a>
                                         </td>
                                     </tr>
                                 }

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -157,9 +158,13 @@ namespace InventorySystemMysql
             app.UseRouting();
             app.UseCookiePolicy();
             app.UseAuthentication();
-    
             app.UseAuthorization(); 
             app.UseNToastNotify();
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+         ForwardedHeaders.XForwardedProto
+            });
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

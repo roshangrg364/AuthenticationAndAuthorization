@@ -31,6 +31,21 @@ namespace BaseModule.Mapping.AuditMapping
                    .HasColumnName("table_name")
                   .HasMaxLength(100)
                   .IsRequired();
+
+
+            builder
+                  .Property(a => a.IpAddress)
+                   .HasColumnName("ip_address")
+                  .HasMaxLength(200)
+                  .IsRequired();
+
+
+
+            builder
+                  .Property(a => a.Browser)
+                   .HasColumnName("browser")
+                  .HasMaxLength(100);
+
             builder
             
                  .Property(a => a.ActionOn)

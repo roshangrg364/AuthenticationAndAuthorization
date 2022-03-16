@@ -23,7 +23,7 @@ namespace InventoryModule.Entity
             Name = name;
         }
      
-        public int Id { get;protected set; }
+        public long Id { get;protected set; }
         public string   Name { get; protected set; }
         public string  Status { get; protected set; }
         public bool IsActive => Status == StatusActive;

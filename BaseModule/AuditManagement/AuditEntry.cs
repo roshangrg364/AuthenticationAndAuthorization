@@ -14,6 +14,8 @@ namespace BaseModule.AuditManagement
         }
         public EntityEntry Entry { get; }
         public string UserId { get; set; }
+        public string IpAddress { get; set; }
+        public string Browser { get; set; }
         public string TableName { get; set; }
         public Dictionary<string, object> KeyValues { get; } = new Dictionary<string, object>();
         public Dictionary<string, object> OldValues { get; } = new Dictionary<string, object>();
@@ -26,6 +28,8 @@ namespace BaseModule.AuditManagement
             audit.UserId = UserId;
             audit.Type = AuditType.ToString();
             audit.TableName = TableName;
+            audit.IpAddress = IpAddress;
+            audit.Browser = Browser;
             audit.ActionOn = DateTime.Now;
             audit.PrimaryKey = JsonConvert.SerializeObject(KeyValues);
             audit.OldValues = OldValues.Count == 0 ? null : JsonConvert.SerializeObject(OldValues);

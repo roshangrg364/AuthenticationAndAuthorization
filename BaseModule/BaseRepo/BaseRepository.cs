@@ -51,7 +51,7 @@ namespace BaseModule.BaseRepo
 
         public async Task UpdateAsync(T entity)
         {
-            _context.Set<T>().Update(entity);
+           _context.Set<T>().Attach(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
     }

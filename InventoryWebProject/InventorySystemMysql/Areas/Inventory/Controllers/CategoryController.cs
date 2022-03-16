@@ -1,4 +1,5 @@
 ﻿using InventoryModule.Dto.Category;
+using InventoryModule.Exceptions;
 using InventoryModule.Repository;
 using InventoryModule.Service;
 using InventorySystemMysql.Areas.Inventory.ViewModels.Category;
@@ -72,6 +73,46 @@ namespace InventorySystemMysql.Areas.Inventory.Controllers
                 _logger.LogError(ex, ex.Message);
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Update(long categoryId)
+        {
+            try
+            {
+                var category = await _categoryRepo.GetById(categoryId) ?? throw new CategoryNotFoundException();
+                var categoryUpdateModel = new CategoryViewModel() {
+                    Id  = categoryId,
+                    Name = category.Name
+                };
+                return View(categoryUpdateModel);
+            }
+            catch (Exception ex)
+            {
+                _notify.AddErrorToastMessage(ex.Message);
+                _logger.LogError(ex, ex.Message);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(CategoryIndexViewModel model)
+        {
+            try
+            {
+                var categoryUpdateDto = new CategoryDto { 
+                    Id = model.Id,
+                    Name = model.Name
+                };
+                await _categoryService.Update(categoryUpdateDto);
+                _notify.AddSuccessToastMessage("CreatedSuccessfully");
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _notify.AddErrorToastMessage(ex.Message);
+                _logger.LogError(ex, ex.Message);
+            }
+            return View(model);
         }
     }
 }
