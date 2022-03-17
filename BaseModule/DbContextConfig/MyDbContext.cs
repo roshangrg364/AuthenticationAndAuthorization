@@ -1,5 +1,6 @@
 ﻿
 using BaseModule.AuditManagement;
+using BaseModule.Mapping.ActivityLogMapping;
 using BaseModule.Mapping.AuditMapping;
 using BaseModule.Mapping.InventoryMapping;
 using BaseModule.Mapping.User;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,21 +39,30 @@ namespace BaseModule.DbContextConfig
             modelBuilder.ApplyConfiguration(new UserEntityMapping());
             #endregion
 
-            #region audit
+            #region audit and activityLogMapping
             modelBuilder.ApplyConfiguration(new AuditEntityMapping());
+            modelBuilder.ApplyConfiguration(new ActivityLogMappingConfig());
             #endregion
 
         }
 
-        public virtual async Task<int> SaveChangesAsync()
+        public virtual async Task<int> SaveChangesAsync(bool isTracked = true)
         {
-            OnBeforeSaveChanges();
+            if(isTracked)
+            {
+                OnBeforeSaveChanges();
+            }          
             var result = await base.SaveChangesAsync();
             return result;
         }
         private void OnBeforeSaveChanges()
         {
-            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = "";
+            if(_httpContextAccessor.HttpContext.User.Claims.Count() >0)
+            {
+                 userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            }
             var ipAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
               var browser = _httpContextAccessor.HttpContext.Request.Headers["user-agent"].ToString();
             ChangeTracker.DetectChanges();

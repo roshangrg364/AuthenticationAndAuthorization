@@ -2,6 +2,7 @@
 using InventoryModule.Exceptions;
 using InventoryModule.Repository;
 using InventoryModule.Service;
+using InventorySystemMysql.ActionFilters;
 using InventorySystemMysql.Areas.Inventory.ViewModels.Category;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,7 @@ namespace InventorySystemMysql.Areas.Inventory.Controllers
 {
     [Area("Inventory")]
     [Authorize]
+    [ServiceFilter(typeof(ActivityLogFilters))]
     public class CategoryController : Controller
     {
         private readonly CategoryRepositoryInterface _categoryRepo;

@@ -10,6 +10,7 @@ namespace BaseModule.BaseRepo
     {
         Task<IList<T>> GetAllAsync();
         Task InsertAsync(T entity);
+        Task InsertWithoutTrackingAsync(T entity);
         Task InsertRange(IList<T> entities);
         Task UpdateAsync(T entity);
         Task DeleteAsync(T entity);

@@ -49,6 +49,12 @@ namespace BaseModule.BaseRepo
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
+        public async Task InsertWithoutTrackingAsync(T entity)
+        {
+            await _context.Set<T>().AddAsync(entity).ConfigureAwait(false);
+            await _context.SaveChangesAsync(false).ConfigureAwait(false);
+        }
+
         public async Task UpdateAsync(T entity)
         {
            _context.Set<T>().Attach(entity).State = EntityState.Modified;

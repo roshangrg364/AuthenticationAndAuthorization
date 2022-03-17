@@ -1,5 +1,6 @@
 
 using BaseModule.DbContextConfig;
+using InventorySystemMysql.ActionFilters;
 using InventorySystemMysql.CustomTokenProvider;
 using InventorySystemMysql.Extensions;
 using InventorySystemMysql.Models;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,7 +44,8 @@ namespace InventorySystemMysql
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            services.AddControllersWithViews();
+
             services.AddDbContext<MyDbContext>(options =>
             {
                 options.UseLazyLoadingProxies().UseMySQL(Configuration.GetConnectionString("Default"), b => b.MigrationsAssembly("InventorySystemMysql"));
@@ -83,6 +86,7 @@ namespace InventorySystemMysql
              {
                  var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                  options.Filters.Add(new AuthorizeFilter(policy));
+                 options.Filters.Add(typeof(ActivityLogFilters));
 
              })
             .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null) ;
@@ -136,7 +140,16 @@ namespace InventorySystemMysql
                 }
             });
             services.AddTransient<IAuthorizationHandler, PermissionAuthorizationHandler>();
-
+            services.AddHttpContextAccessor();
+            services.AddDistributedMemoryCache();
+            services.AddScoped<ActivityLogFilters>();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.Cookie.IsEssential = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -158,7 +171,8 @@ namespace InventorySystemMysql
             app.UseRouting();
             app.UseCookiePolicy();
             app.UseAuthentication();
-            app.UseAuthorization(); 
+            app.UseAuthorization();
+            app.UseSession();
             app.UseNToastNotify();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {

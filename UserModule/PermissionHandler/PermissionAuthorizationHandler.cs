@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace UserModule.PermissionHandler
             {
                 throw new UserNotFoundException();
             }
-
+           
             // Get all the roles the user belongs to and check if any of the roles has the permission required
             // for the authorization to succeed.
             var user = await _userManager.GetUserAsync(context.User);

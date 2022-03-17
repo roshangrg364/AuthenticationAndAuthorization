@@ -1,4 +1,5 @@
-﻿using InventorySystemMysql.Models;
+﻿using InventorySystemMysql.ActionFilters;
+using InventorySystemMysql.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -19,6 +20,7 @@ using UserModule.Service;
 using crypter = BCrypt.Net.BCrypt;
 namespace InventorySystemMysql.Controllers
 {
+  
     [AllowAnonymous]
     public class AccountController : Controller
     {
