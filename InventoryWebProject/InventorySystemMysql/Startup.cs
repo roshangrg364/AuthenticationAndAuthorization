@@ -28,7 +28,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UserModule.Entity;
 using UserModule.PermissionHandler;
-
+using Pomelo.EntityFrameworkCore;
 namespace InventorySystemMysql
 {
     public class Startup
@@ -48,7 +48,8 @@ namespace InventorySystemMysql
 
             services.AddDbContext<MyDbContext>(options =>
             {
-                options.UseLazyLoadingProxies().UseMySQL(Configuration.GetConnectionString("Default"), b => b.MigrationsAssembly("InventorySystemMysql"));
+                var configuration = Configuration.GetConnectionString("Default");
+                options.UseLazyLoadingProxies().UseMySql(configuration, ServerVersion.AutoDetect(configuration), b => b.MigrationsAssembly("InventorySystemMysql"));
             });
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<MyDbContext>()
@@ -108,7 +109,7 @@ namespace InventorySystemMysql
                 options =>
                 {
                     // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                    options.CheckConsentNeeded = context => true;
+                  
                     options.MinimumSameSitePolicy = SameSiteMode.Lax;
                 }
             );

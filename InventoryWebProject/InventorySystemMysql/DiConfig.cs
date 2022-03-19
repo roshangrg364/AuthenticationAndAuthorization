@@ -1,5 +1,6 @@
 ﻿using BaseModule.ActivityManagement.Repo;
 using BaseModule.ActivityManagement.Service;
+using BaseModule.AuditManagement.Repository;
 using BaseModule.Repository.Inventory;
 using BaseModule.Repository.User;
 using InventoryModule.Repository;
@@ -29,6 +30,7 @@ namespace InventorySystemMysql
         {
             services.AddTransient<ActivityLogRepositoryInterface, ActivityLogRepository>();
             services.AddTransient<ActivityLogServiceInterface, ActivityLogService>();
+            services.AddTransient<AuditLogRepositoryInterface, AuditLogRepository>();
 
         }
         private static void UseInventoryRepo(IServiceCollection services)

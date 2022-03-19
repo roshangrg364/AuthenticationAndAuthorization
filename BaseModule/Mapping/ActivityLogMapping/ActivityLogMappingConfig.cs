@@ -26,21 +26,15 @@ namespace BaseModule.Mapping.ActivityLogMapping
                    .HasColumnName("area")
                    .HasMaxLength(100);
 
-
-
-
             builder
                   .Property(a => a.ControllerName)
                    .HasColumnName("controller")
                   .HasMaxLength(100);
 
-
-
             builder
                   .Property(a => a.IpAddress)
                    .HasColumnName("ip_address")
                   .HasMaxLength(200);
-
 
 
             builder
@@ -72,6 +66,27 @@ namespace BaseModule.Mapping.ActivityLogMapping
               .Property(a => a.UrlReferrer)
                .HasColumnName("url_referer")
                .HasMaxLength(100);
+
+            builder
+                 .Property(a => a.ActionOn)
+                  .HasColumnName("action_on")
+                  .HasConversion<DateTime>();
+
+            builder
+                 .Property(a => a.Data)
+                  .HasColumnName("data");
+            builder
+                .Property(a => a.Status)
+                 .HasColumnName("status")
+                 .HasMaxLength(100);
+             builder
+                .Property(a => a.QueryString)
+                 .HasColumnName("query_string")
+                 ;
+
+
+
+
         }
     }
 }

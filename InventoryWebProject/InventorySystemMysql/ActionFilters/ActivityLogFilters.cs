@@ -3,6 +3,7 @@ using BaseModule.ActivityManagement.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,8 @@ namespace InventorySystemMysql.ActionFilters
         {
             _activityService = activityService;
         }
+
+        
         public override  async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var controllerName = ((ControllerBase)context.Controller)
@@ -40,12 +43,26 @@ namespace InventorySystemMysql.ActionFilters
             }
 
             var session = context.HttpContext.Session.Id;
+            var statusCode = context.HttpContext.Response.StatusCode.ToString();
             var ipAddress = context.HttpContext.Connection.RemoteIpAddress.ToString();
+            var queryString = context.HttpContext.Request.QueryString.Value;
+            var data = "";
+            var arguments = context.ActionArguments;
+            if (arguments.Any())
+            {
+                var argumentsData = new List<KeyValuePair<string, object>>();
+                foreach(var argument in arguments)
+                {
+                    argumentsData.Add(argument);
+                }
+                data = JsonConvert.SerializeObject(argumentsData);
+              
+            }
             var browser = context.HttpContext.Request.Headers["user-agent"].ToString();
             var pageAccessed = Convert.ToString(context.HttpContext.Request.Path);
             var header = context.HttpContext.Request.GetTypedHeaders();
             var userId = "";
-            var userName = "";
+            var userName = "Anonymous";
             var user = context.HttpContext.User;
             if (user.Claims.Count() >0 )
             {
@@ -59,7 +76,7 @@ namespace InventorySystemMysql.ActionFilters
                 uriRef = header.Referer.AbsoluteUri;
             }
 
-            var activityDto = new ActivityLogDto(Area, controllerName, actionName, ipAddress, pageAccessed, session, userName, userId, uriRef, browser);
+            var activityDto = new ActivityLogDto(Area, controllerName, actionName, ipAddress, pageAccessed, session, userName, userId, uriRef, browser,statusCode,data,queryString);
             await _activityService.Create(activityDto);
             await next();
         }

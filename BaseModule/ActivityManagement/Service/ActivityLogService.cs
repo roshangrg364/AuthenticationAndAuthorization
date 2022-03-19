@@ -20,7 +20,7 @@ namespace BaseModule.ActivityManagement.Service
         {
             using var tx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
             var activityLog = new ActivityLog(dto.Area, dto.ControllerName, dto.ActionName, dto.IpAddress,
-                dto.PageAccessed, dto.SessionId, dto.UserName, dto.UserId, dto.UrlReferrer,dto.Browser);
+                dto.PageAccessed, dto.SessionId, dto.UserName, dto.UserId, dto.UrlReferrer,dto.Browser,dto.Status,dto.Data,dto.QueryString);
             await _activityLogRepo.InsertWithoutTrackingAsync(activityLog).ConfigureAwait(false);
             tx.Complete();
         }

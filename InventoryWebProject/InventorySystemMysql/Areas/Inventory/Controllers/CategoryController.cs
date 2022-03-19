@@ -17,7 +17,7 @@ namespace InventorySystemMysql.Areas.Inventory.Controllers
 {
     [Area("Inventory")]
     [Authorize]
-    [ServiceFilter(typeof(ActivityLogFilters))]
+    
     public class CategoryController : Controller
     {
         private readonly CategoryRepositoryInterface _categoryRepo;

@@ -1,0 +1,68 @@
+﻿@model IList<ActivityLogViewModel>
+@{
+}
+<div class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card  card-tasks">
+                <div class="card-header ">
+                    <h5 class="card-category">Activity Log</h5>
+
+                </div>
+
+                <div class="card-body ">
+                 
+                        <table id="logTable" class="  table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Area</th>
+                                    <th>Controller</th>
+                                    <th>Action</th>
+                                    <th>Action On</th>
+                                    <th>PageAccessed</th>
+                                    <th>Ip Address</th>
+                                    <th>Browser</th>
+                                    <th>SessionId</th>
+                                    <th>Status</th>
+                                    <th>Data</th>
+                               
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td hidden> @item.UserId</td>
+                                        <td> @item.UserName</td>
+                                        <td> @item.Area</td>
+                                        <td> @item.ControllerName</td>
+                                        <td> @item.ActionName</td>
+                                        <td> @item.ActionOn</td>
+                                        <td> @item.PageAccessed</td>
+                                        <td> @item.IpAddress</td>
+                                        <td> @item.Browser</td>
+                                        <td> @item.SessionId</td>
+                                        <td> @item.Status</td>
+                                        <td> @item.Data</td>
+                                      
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                   
+                </div>
+                <div class="card-footer ">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    <script>
+        $('#logTable').dataTable({
+        });
+    </script>
+}

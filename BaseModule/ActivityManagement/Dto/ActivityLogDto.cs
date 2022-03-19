@@ -7,7 +7,7 @@ namespace BaseModule.ActivityManagement.Dto
   public  class ActivityLogDto
     {
         public ActivityLogDto(string area, string controller,string action,string ipAddress,string pageAccessed,
-            string sessionId,string userName,string userId,string urlRef,string browser)
+            string sessionId,string userName,string userId,string urlRef,string browser,string status,string data,string queryString)
         {
             Area = area;
             ControllerName = controller;
@@ -19,8 +19,14 @@ namespace BaseModule.ActivityManagement.Dto
             UserId = userId;
             UrlReferrer = urlRef;
             Browser = browser;
+            Status = status;
+            Data = data;
+            QueryString = queryString;
         }
         public string Area { get;  protected set; }
+        public string Status { get;  protected set; }
+        public string QueryString { get;  protected set; }
+        public string Data { get;  protected set; }
         public string ControllerName { get; protected set; }
         public string ActionName { get; protected set; }
 

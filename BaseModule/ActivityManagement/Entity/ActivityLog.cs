@@ -8,7 +8,7 @@ namespace BaseModule.ActivityManagement.Entity
     {
         protected ActivityLog() { }
         public ActivityLog(string area, string controller, string action, string ipAddress, string pageAccessed,
-          string sessionId, string userName, string userId, string urlRef,string browser)
+          string sessionId, string userName, string userId, string urlRef,string browser,string status ,string data,string queryString)
         {
             Area = area;
             ControllerName = controller;
@@ -20,6 +20,10 @@ namespace BaseModule.ActivityManagement.Entity
             UserId = userId;
             UrlReferrer = urlRef;
             Browser = browser;
+            ActionOn = DateTime.Now;
+            Status = status;
+            Data = data;
+            QueryString = queryString;
         }
         public int Id { get; protected set; }
         public string Area { get; protected set; }
@@ -32,6 +36,14 @@ namespace BaseModule.ActivityManagement.Entity
         public string UserId { get; protected set; }
         public string UserName { get; protected set; }
         public string Browser { get; protected set; }
+        public string Data { get; protected set; }
+        public string QueryString { get; protected set; }
+        public DateTime ActionOn { get; protected set; }
+        public string Status { get; set; }
+
 
     }
+
+   
+
 }
