@@ -84,7 +84,7 @@ namespace BaseModule.Mapping.ActivityLogMapping
                  .HasColumnName("query_string")
                  ;
 
-
+            builder.ToTable("activitylogs");
 
 
         }
