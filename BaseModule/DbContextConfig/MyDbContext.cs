@@ -1,4 +1,5 @@
 ﻿
+using BaseModule.ActivityManagement.Entity;
 using BaseModule.AuditManagement;
 using BaseModule.Mapping.ActivityLogMapping;
 using BaseModule.Mapping.AuditMapping;
@@ -18,7 +19,7 @@ using UserModule.Entity;
 
 namespace BaseModule.DbContextConfig
 {
-    public partial class MyDbContext : IdentityDbContext
+    public  class MyDbContext : IdentityDbContext
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         
@@ -26,8 +27,15 @@ namespace BaseModule.DbContextConfig
         {
             _httpContextAccessor = httpContextAccessor;
         }
-       
 
+        #region Inventory
+        public DbSet<Category> Category { get; set; }
+        #endregion
+
+        #region Audit and activity log
+        public DbSet<Audit> AuditLogs { get; set; }
+        public DbSet<ActivityLog> ActivityLogs { get; set; }
+        #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
