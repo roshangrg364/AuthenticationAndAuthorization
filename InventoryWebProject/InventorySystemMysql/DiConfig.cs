@@ -1,8 +1,11 @@
 ﻿using BaseModule.ActivityManagement.Repo;
 using BaseModule.ActivityManagement.Service;
 using BaseModule.AuditManagement.Repository;
+using BaseModule.Repository.Email;
 using BaseModule.Repository.Inventory;
 using BaseModule.Repository.User;
+using EmailModule.Repository;
+using EmailModule.Service;
 using InventoryModule.Repository;
 using InventoryModule.Service;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +27,7 @@ namespace InventorySystemMysql
             UserUserRepo(services);
             UserUserService(services);
             UseBase(services);
+            UserEmailConfig(services);
         }
 
         private static void UseBase(IServiceCollection services)
@@ -33,7 +37,14 @@ namespace InventorySystemMysql
             services.AddTransient<AuditLogRepositoryInterface, AuditLogRepository>();
 
         }
-        private static void UseInventoryRepo(IServiceCollection services)
+        private static void UserEmailConfig(IServiceCollection services)
+        {
+            services.AddScoped<EmailSenderServiceInterface, EmailSenderService>();
+            services.AddScoped<EmailTemplateServiceInterface, EmailTemplateService>();
+            services.AddScoped<EmailTemplateRepositoryInterface, EmailTemplateRepository>();
+        }
+
+            private static void UseInventoryRepo(IServiceCollection services)
         {
             services.AddScoped<CategoryRepositoryInterface, CategoryRepository>();
            

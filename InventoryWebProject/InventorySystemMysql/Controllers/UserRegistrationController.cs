@@ -1,4 +1,6 @@
-﻿using InventorySystemMysql.Areas.User.Controllers;
+﻿using EmailModule.Entity;
+using EmailModule.Service;
+using InventorySystemMysql.Areas.User.Controllers;
 using InventorySystemMysql.Areas.User.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -25,12 +27,14 @@ namespace InventorySystemMysql.Controllers
         private readonly IToastNotification _notify;
         private readonly UserServiceInterface _userService;
         private readonly ILogger<UserController> _logger;
+        private readonly EmailSenderServiceInterface _emailSenderService;
         public UserRegistrationController(UserRepositoryInterface userRepository,
             IToastNotification notify,
             UserServiceInterface userService,
             ILogger<UserController> logger,
             RoleManager<IdentityRole> roleManager,
-            UserManager<User> userManager)
+            UserManager<User> userManager,
+            EmailSenderServiceInterface emailSenderService)
         {
             _userRepo = userRepository;
             _notify = notify;
@@ -38,6 +42,7 @@ namespace InventorySystemMysql.Controllers
             _logger = logger;
             _roleManager = roleManager;
             _userManager = userManager;
+            _emailSenderService = emailSenderService;
         }
         public IActionResult Register()
         {
@@ -59,10 +64,11 @@ namespace InventorySystemMysql.Controllers
                 };
                 await _userService.Create(createDto);
                 _notify.AddSuccessToastMessage("created succesfuly");
-                var user = await _userManager.FindByNameAsync(model.Name).ConfigureAwait(true);
+                var user = await _userManager.FindByEmailAsync(model.EmailAddress).ConfigureAwait(true);
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var confirmationLink = Url.Action("ConfirmEmail", "Account", new { email = user.Email, token = token }, Request.Scheme);
-                _logger.Log(LogLevel.Warning, confirmationLink);
+                var message = new Message(new string[] { "roshan.grg364@gmail.com" }, "test email", "<a href=" + confirmationLink + ">Confirm email</a>", null);
+                await _emailSenderService.SendEmail(message);
                 return RedirectToAction(nameof(Success));
               
             }

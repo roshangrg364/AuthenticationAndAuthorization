@@ -29,6 +29,8 @@ using System.Threading.Tasks;
 using UserModule.Entity;
 using UserModule.PermissionHandler;
 using Pomelo.EntityFrameworkCore;
+using EmailModule;
+
 namespace InventorySystemMysql
 {
     public class Startup
@@ -46,6 +48,13 @@ namespace InventorySystemMysql
         {
             services.AddControllersWithViews();
 
+            //Email Configuration
+            var emailConfig = Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+            services.AddSingleton(emailConfig);
+            
+            
+            //DbContext config
+
             services.AddDbContext<MyDbContext>(options =>
             {
                 var configuration = Configuration.GetConnectionString("Default");
@@ -54,7 +63,7 @@ namespace InventorySystemMysql
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<MyDbContext>()
                 .AddDefaultTokenProviders()
-                .AddTokenProvider<CustomEmailTokenProvider<User>>(CustomEmailTokenProvider);    
+                .AddTokenProvider<CustomEmailTokenProvider<User>>(CustomEmailTokenProvider);
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -70,18 +79,20 @@ namespace InventorySystemMysql
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
             }
             );
-
+            //Token lifespan config
             services.Configure<DataProtectionTokenProviderOptions>(options =>
             {
                 options.TokenLifespan = TimeSpan.FromMinutes(30);
             });
 
+            //Custome Token provider config
             services.Configure<CustomEmailTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromHours(5));
+
             services.AddMvc().AddNToastNotifyToastr(new ToastrOptions()
             {
                 ProgressBar = true,
                 TimeOut = 1500,
-                PositionClass = ToastPositions.TopRight 
+                PositionClass = ToastPositions.TopRight
             })
              .AddMvcOptions(options =>
              {
@@ -90,7 +101,7 @@ namespace InventorySystemMysql
                  options.Filters.Add(typeof(ActivityLogFilters));
 
              })
-            .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null) ;
+            .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 
             services.AddAuthentication()
                  .AddGoogle(options =>
@@ -98,7 +109,7 @@ namespace InventorySystemMysql
                      options.ClientId = Configuration["Google:ClientId"];
                      options.ClientSecret = Configuration["Google:ClientSecret"];
                  })
-                 .AddFacebook(options=>
+                 .AddFacebook(options =>
                  {
                      options.AppId = Configuration["Facebook:ClientId"];
                      options.AppSecret = Configuration["Facebook:ClientSecret"];
@@ -109,12 +120,12 @@ namespace InventorySystemMysql
                 options =>
                 {
                     // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                  
+
                     options.MinimumSameSitePolicy = SameSiteMode.Lax;
                 }
             );
-          
-        
+
+
             services.ConfigureApplicationCookie(options =>
              {
                  // Cookie settings
@@ -125,7 +136,8 @@ namespace InventorySystemMysql
                  options.Events.OnRedirectToLogin = (evnt) =>
                      {
                          var returnUrl = evnt.Request.Path;
-                         if (string.IsNullOrWhiteSpace(returnUrl) || returnUrl == "/") returnUrl = "/Home/Index";
+                         if (string.IsNullOrWhiteSpace(returnUrl) || returnUrl == "/")
+                             returnUrl = "/Home/Index";
                          evnt.Response.Redirect("/Account/Login?ReturnUrl=" + returnUrl);
                          return Task.CompletedTask;
                      };
@@ -133,11 +145,12 @@ namespace InventorySystemMysql
                  options.SlidingExpiration = true;
              });
 
-          
-            services.AddAuthorization(options => {
-                foreach(var permission in Permission.Permissions)
-                { 
-                options.AddPolicy(permission, policy => policy.Requirements.Add(new PermissionRequirement(permission)));
+
+            services.AddAuthorization(options =>
+            {
+                foreach (var permission in Permission.Permissions)
+                {
+                    options.AddPolicy(permission, policy => policy.Requirements.Add(new PermissionRequirement(permission)));
                 }
             });
             services.AddTransient<IAuthorizationHandler, PermissionAuthorizationHandler>();

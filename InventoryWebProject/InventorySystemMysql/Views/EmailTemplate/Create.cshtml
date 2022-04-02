@@ -1,0 +1,51 @@
+﻿@model EmailTemplateCreateViewModel
+@{
+}
+<div class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card  card-tasks">
+                <div class="card-header ">
+                    <h5 class="card-category">Create Template</h5>
+
+                </div>
+                <form method="post" asp-area="" asp-controller="EmailTemplate" asp-action="Create">
+                <div class="card-body ">
+                    <div class="col-md-6">
+                       
+                    <div class ="form-group">
+                        <label>Type</label>
+                        @(Html.DropDownListFor(a=>a.Type,Model.TypeSelectList,"-select",new {@class="form-control"}))
+                        @Html.ValidationMessageFor(a=>a.Type);
+                    </div>
+
+                     <div class ="form-group">
+                        <label>Template</label>
+                      <textarea id="editor" asp-for="Template"></textarea>
+                        @Html.ValidationMessageFor(a=>a.Template);
+                    </div>
+
+                     <div class ="form-group">
+                      <button type="submit"> Create</button>
+                    </div>
+                    </div>
+                </div>
+
+                </form>
+                <div class="card-footer ">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+      $(document).ready(function(){
+        CKEDITOR.replace("editor")
+    })
+    </script>
+  
+}

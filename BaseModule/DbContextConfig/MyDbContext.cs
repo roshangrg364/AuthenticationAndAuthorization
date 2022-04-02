@@ -3,6 +3,7 @@ using BaseModule.ActivityManagement.Entity;
 using BaseModule.AuditManagement;
 using BaseModule.Mapping.ActivityLogMapping;
 using BaseModule.Mapping.AuditMapping;
+using BaseModule.Mapping.EmailModuleMapping;
 using BaseModule.Mapping.InventoryMapping;
 using BaseModule.Mapping.User;
 using InventoryModule.Entity;
@@ -51,7 +52,7 @@ namespace BaseModule.DbContextConfig
             modelBuilder.ApplyConfiguration(new AuditEntityMapping());
             modelBuilder.ApplyConfiguration(new ActivityLogMappingConfig());
             #endregion
-
+            modelBuilder.ApplyConfiguration(new TemplateMapping());
         }
 
         public virtual async Task<int> SaveChangesAsync(bool isTracked = true)
