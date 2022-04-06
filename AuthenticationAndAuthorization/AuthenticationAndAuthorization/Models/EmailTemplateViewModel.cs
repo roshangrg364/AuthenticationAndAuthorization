@@ -1,10 +1,9 @@
-﻿using EmailModule.Entity;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using EmailModule.Entity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace InventorySystemMysql.Models
+namespace AuthenticationAndAuthorization.Models
 {
     public class EmailTemplateIndexViewModel
     {

@@ -1,17 +1,11 @@
-﻿
-using InventorySystemMysql.Extensions;
-using InventorySystemMysql.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using System.Diagnostics;
+using System.Threading.Tasks;
+using AuthenticationAndAuthorization.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NToastNotify;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace InventorySystemMysql.Controllers
+namespace AuthenticationAndAuthorization.Controllers
 {
   
     public class HomeController : Controller

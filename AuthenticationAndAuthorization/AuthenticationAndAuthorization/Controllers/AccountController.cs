@@ -1,24 +1,20 @@
-﻿using InventorySystemMysql.ActionFilters;
-using InventorySystemMysql.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using AuthenticationAndAuthorization.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NToastNotify;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using UserModule.Dto.User;
 using UserModule.Entity;
 using UserModule.Exceptions;
 using UserModule.Repository;
 using UserModule.Service;
-using crypter = BCrypt.Net.BCrypt;
-namespace InventorySystemMysql.Controllers
+
+namespace AuthenticationAndAuthorization.Controllers
 {
   
     [AllowAnonymous]

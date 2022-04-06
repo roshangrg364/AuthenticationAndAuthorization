@@ -1,23 +1,20 @@
-﻿using InventorySystemMysql.Areas.User.ViewModel;
-using InventorySystemMysql.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using AuthenticationAndAuthorization.Areas.User.ViewModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NToastNotify;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using UserModule.Dto.Role;
 using UserModule.Exceptions;
 using UserModule.PermissionHandler;
-using UserModule.Repository;
 using UserModule.Service;
 
-namespace InventorySystemMysql.Areas.User.Controllers
+namespace AuthenticationAndAuthorization.Areas.User.Controllers
 {
     [Area("User")]
     

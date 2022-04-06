@@ -1,15 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Threading.Tasks;
-using UserModule.Exceptions;
-using UserModule.Repository;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using UserModule.Exceptions;
 
-namespace InventorySystemMysql.Extensions
+namespace AuthenticationAndAuthorization.Extensions
 {
     public static class GetCurrentUserExtension
     {

@@ -1,6 +1,4 @@
-using System;
-
-namespace InventorySystemMysql.Models
+namespace AuthenticationAndAuthorization.Models
 {
     public class ErrorViewModel
     {

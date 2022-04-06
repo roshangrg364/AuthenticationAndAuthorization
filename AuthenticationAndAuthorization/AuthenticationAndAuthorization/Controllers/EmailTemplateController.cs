@@ -1,14 +1,15 @@
-﻿using EmailModule.Repository;
-using EmailModule.Service;
-using InventorySystemMysql.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using NToastNotify;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-namespace InventorySystemMysql.Controllers
+using AuthenticationAndAuthorization.Models;
+using EmailModule.Repository;
+using EmailModule.Service;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using NToastNotify;
+
+namespace AuthenticationAndAuthorization.Controllers
 {
     public class EmailTemplateController : Controller
     {
