@@ -17,7 +17,7 @@ namespace BaseModule.Mapping.EmailModuleMapping
             builder.Property<long>(a => a.Id).HasColumnName("template_id").HasMaxLength(20).IsRequired();
             builder.Property<string>(a => a.Template).HasColumnName("template").IsRequired();
             builder.Property<string>(a => a.Type).HasColumnName("type").IsRequired();
-            builder.Ignore(a => a.TemplateVariables);
+           // builder.Ignore(a => a.TemplateVariables);
             builder.ToTable("template");
         }
     }

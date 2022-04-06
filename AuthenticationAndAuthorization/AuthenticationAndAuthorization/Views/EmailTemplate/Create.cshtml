@@ -1,0 +1,75 @@
+﻿@model EmailTemplateCreateViewModel
+@using EmailModule.Entity
+@{
+}
+<div class="content">
+    <div class="row">
+
+
+        <div class="col-md-12">
+            <div class="card  card-tasks">
+                <div class="card-header ">
+                    <h5 class="card-category">Create Template</h5>
+                </div>
+          
+
+                 <div class="col-md-6">
+                        <ul>
+                            <label>Keys</label>
+                        @foreach(var key in EmailTemplate.TemplateVariables)
+                            {
+                                <li> @key</li>
+                            }
+                            </ul>
+                        </div>
+               
+                <div class="card-body col-md-12 ">
+          
+                     
+
+                        
+                    <div class="col-md-6">
+                        <form method="post" asp-area="" asp-controller="EmailTemplate" asp-action="Create">
+                        <div class ="form-group">
+                            <label>Type</label>
+                            @(Html.DropDownListFor(a=>a.Type,Model.TypeSelectList,"-select",new {@class="form-control"}))
+                            @Html.ValidationMessageFor(a=>a.Type);
+                        </div>
+
+                         <div class ="form-group">
+                            <label>Template</label>
+                              <textarea id="editor" asp-for="Template"></textarea>
+                                @Html.ValidationMessageFor(a=>a.Template);
+                        </div>
+                   
+
+                         <div class ="form-group">
+                            <button type="submit" class="btn btn-primary">save    </button>
+                        </div>
+                       
+                          </form>
+
+                    </div>
+                </div>
+
+               
+                <div class="card-footer ">
+
+                </div>
+            </div>
+        </div>
+        </div>
+
+
+    </div>
+
+
+@section scripts
+{
+    <script>
+      $(document).ready(function(){
+        CKEDITOR.replace("editor")
+    })
+    </script>
+  
+}

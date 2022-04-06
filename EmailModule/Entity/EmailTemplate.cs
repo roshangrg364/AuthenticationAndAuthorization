@@ -25,7 +25,7 @@ namespace EmailModule.Entity
         public string Type { get; protected set; }
         public string Template { get;protected set; }
 
-        public IList<string> TemplateVariables => new List<string>
+        public static IList<string> TemplateVariables => new List<string>
         {
             "{Name}"
         };

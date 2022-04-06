@@ -4,9 +4,7 @@ using BaseModule.AuditManagement;
 using BaseModule.Mapping.ActivityLogMapping;
 using BaseModule.Mapping.AuditMapping;
 using BaseModule.Mapping.EmailModuleMapping;
-using BaseModule.Mapping.InventoryMapping;
 using BaseModule.Mapping.User;
-using InventoryModule.Entity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -29,9 +27,7 @@ namespace BaseModule.DbContextConfig
             _httpContextAccessor = httpContextAccessor;
         }
 
-        #region Inventory
-        public DbSet<Category> Category { get; set; }
-        #endregion
+      
 
         #region Audit and activity log
         public DbSet<Audit> AuditLogs { get; set; }
@@ -40,10 +36,7 @@ namespace BaseModule.DbContextConfig
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            #region inventorymapping
-            modelBuilder.ApplyConfiguration(new CategoryMapping());
-            #endregion
-
+          
             #region userMapping
             modelBuilder.ApplyConfiguration(new UserEntityMapping());
             #endregion

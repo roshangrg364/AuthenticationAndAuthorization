@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EmailModule\EmailModule.csproj" />
-    <ProjectReference Include="..\InventoryModule\InventoryModule.csproj" />
     <ProjectReference Include="..\UserModule\UserModule.csproj" />
   </ItemGroup>
 
