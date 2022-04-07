@@ -1,22 +1,20 @@
-﻿using EmailModule.Entity;
+﻿using System;
+using System.Threading.Tasks;
+using AuthenticationAndAuthorization.Areas.User.Controllers;
+using AuthenticationAndAuthorization.Areas.User.ViewModel;
+using EmailModule.Entity;
 using EmailModule.Service;
-using InventorySystemMysql.Areas.User.Controllers;
-using InventorySystemMysql.Areas.User.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NToastNotify;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using UserModule.Dto.User;
 using UserModule.Entity;
 using UserModule.Repository;
 using UserModule.Service;
 
-namespace InventorySystemMysql.Controllers
+namespace AuthenticationAndAuthorization.Controllers
 {
     [AllowAnonymous]
     public class UserRegistrationController : Controller

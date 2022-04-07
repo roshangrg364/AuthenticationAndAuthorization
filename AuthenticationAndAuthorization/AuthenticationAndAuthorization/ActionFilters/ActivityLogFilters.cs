@@ -1,16 +1,16 @@
-﻿using BaseModule.ActivityManagement.Dto;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using BaseModule.ActivityManagement.Dto;
 using BaseModule.ActivityManagement.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
-namespace InventorySystemMysql.ActionFilters
+namespace AuthenticationAndAuthorization.ActionFilters
 {
     public class ActivityLogFilters : ActionFilterAttribute
     {

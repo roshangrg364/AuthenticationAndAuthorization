@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace InventorySystemMysql.Migrations
+namespace AuthenticationAndAuthorization.Migrations
 {
     [DbContext(typeof(MyDbContext))]
     [Migration("20220318091441_adddatapropertiestoactivitylog")]

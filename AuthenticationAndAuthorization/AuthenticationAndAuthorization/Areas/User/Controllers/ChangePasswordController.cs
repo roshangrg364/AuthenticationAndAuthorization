@@ -1,16 +1,14 @@
-﻿using InventorySystemMysql.Areas.User.ViewModel;
-using InventorySystemMysql.Extensions;
+﻿using System;
+using System.Threading.Tasks;
+using AuthenticationAndAuthorization.Areas.User.ViewModel;
+using AuthenticationAndAuthorization.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NToastNotify;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using UserModule.Exceptions;
 
-namespace InventorySystemMysql.Areas.User.Controllers
+namespace AuthenticationAndAuthorization.Areas.User.Controllers
 {
     [Area("User")]
     public class ChangePasswordController : Controller

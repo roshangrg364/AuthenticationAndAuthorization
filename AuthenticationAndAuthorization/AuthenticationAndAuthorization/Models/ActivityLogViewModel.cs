@@ -1,4 +1,4 @@
-﻿namespace InventorySystemMysql.Models
+﻿namespace AuthenticationAndAuthorization.Models
 {
     public class ActivityLogViewModel
     {

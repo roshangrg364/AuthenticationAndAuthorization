@@ -1,37 +1,26 @@
-
+using System;
+using System.Threading.Tasks;
+using AuthenticationAndAuthorization.ActionFilters;
+using AuthenticationAndAuthorization.CustomTokenProvider;
+using AuthenticationAndAuthorization.Extensions;
 using BaseModule.DbContextConfig;
-using InventorySystemMysql.ActionFilters;
-using InventorySystemMysql.CustomTokenProvider;
-using InventorySystemMysql.Extensions;
-using InventorySystemMysql.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using EmailModule.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json.Serialization;
 using NToastNotify;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using UserModule.Entity;
 using UserModule.PermissionHandler;
-using Pomelo.EntityFrameworkCore;
-using EmailModule;
 
-namespace InventorySystemMysql
+namespace AuthenticationAndAuthorization
 {
     public class Startup
     {
@@ -58,7 +47,7 @@ namespace InventorySystemMysql
             services.AddDbContext<MyDbContext>(options =>
             {
                 var configuration = Configuration.GetConnectionString("Default");
-                options.UseLazyLoadingProxies().UseMySql(configuration, ServerVersion.AutoDetect(configuration), b => b.MigrationsAssembly("InventorySystemMysql"));
+                options.UseLazyLoadingProxies().UseMySql(configuration, ServerVersion.AutoDetect(configuration), b => b.MigrationsAssembly("AuthenticationAndAuthorization"));
             });
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<MyDbContext>()

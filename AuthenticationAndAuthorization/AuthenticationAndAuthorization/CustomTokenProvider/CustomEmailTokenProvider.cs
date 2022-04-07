@@ -2,12 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace InventorySystemMysql.CustomTokenProvider
+namespace AuthenticationAndAuthorization.CustomTokenProvider
 {
     public class CustomEmailTokenProvider<T>: DataProtectorTokenProvider<T> where T:class
     {

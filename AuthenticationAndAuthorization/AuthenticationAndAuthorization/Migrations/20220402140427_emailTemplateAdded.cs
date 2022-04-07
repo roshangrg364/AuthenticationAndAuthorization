@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace InventorySystemMysql.Migrations
+namespace AuthenticationAndAuthorization.Migrations
 {
     public partial class emailTemplateAdded : Migration
     {

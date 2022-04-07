@@ -5,16 +5,11 @@ using BaseModule.Repository.Email;
 using BaseModule.Repository.User;
 using EmailModule.Repository;
 using EmailModule.Service;
-
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using UserModule.Repository;
 using UserModule.Service;
 
-namespace InventorySystemMysql
+namespace AuthenticationAndAuthorization
 {
     public static class DiConfig
     {

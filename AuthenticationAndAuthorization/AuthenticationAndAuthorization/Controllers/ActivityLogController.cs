@@ -1,12 +1,12 @@
-﻿using BaseModule.ActivityManagement.Repo;
-using InventorySystemMysql.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AuthenticationAndAuthorization.Models;
+using BaseModule.ActivityManagement.Repo;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace InventorySystemMysql.Controllers
+namespace AuthenticationAndAuthorization.Controllers
 {
     public class ActivityLogController : Controller
     {
