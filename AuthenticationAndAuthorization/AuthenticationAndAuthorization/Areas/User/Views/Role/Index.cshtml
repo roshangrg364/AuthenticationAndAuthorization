@@ -16,7 +16,8 @@
                         <div class=" form-group">
                             <a class="btn btn-sm btn-info" asp-area="User" asp-controller="Role" asp-action="Create"><i class="fa fa-plus"></i> Add</a>
                         </div>
-                        <table id="roleTable" class="  table-bordered ">
+                       
+                        <table id="roleTable" class=" table table-resposive ">
                             <thead>
                                 <tr>
                                     <th>S.No</th>
@@ -33,8 +34,8 @@
                                         <td > @item.Sno</td>
                                         <td> @item.Name</td>
                                         <td>
-                                            <a class=" btn btn-info btn-sm">Edit</a>
-                                            <a class=" btn btn-secondary btn-sm"target="_blank" asp-area="User" asp-controller="Role" asp-action="AssignUser" asp-route-roleId="@item.Id">Assign User</a>
+                                            <a class=" btn btn-primary btn-sm">Edit</a>
+                                            <a class=" btn btn-warning btn-sm"target="_blank" asp-area="User" asp-controller="Role" asp-action="AssignUser" asp-route-roleId="@item.Id">Assign User</a>
                                             <a class=" btn btn-info btn-sm"target="_blank" asp-area="User" asp-controller="Role" asp-action="AssignPermission" asp-route-roleId="@item.Id">Assign Permission</a>
                                         </td>
                                     </tr>
@@ -50,11 +51,3 @@
         </div>
     </div>
 </div>
-@section scripts
-{
-
-    <script>
-        $('#roleTable').dataTable({
-        });
-    </script>
-}

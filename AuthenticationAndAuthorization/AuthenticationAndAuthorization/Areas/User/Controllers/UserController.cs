@@ -56,7 +56,8 @@ namespace AuthenticationAndAuthorization.Areas.User.Controllers
                     EmailAddress = user.Email,
                     MobileNumber = user.PhoneNumber,
                     UserName = user.UserName,
-                    Status = user.Status
+                    Status = user.Status,
+                    Type = user.Type
                 });
                 i++;
             }

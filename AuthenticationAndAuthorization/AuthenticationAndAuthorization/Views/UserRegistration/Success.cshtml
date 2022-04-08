@@ -1,7 +1,62 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿
 @{
+    Layout = null;
 }
-<h1>Registration Successfull..</h1>
-please confirm you email first
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Authentication & Authorization</title>
+    <link rel="stylesheet" href="~/vendors/feather/feather.css">
+    <link rel="stylesheet" href="~/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="~/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="~/vendors/typicons/typicons.css">
+    <link rel="stylesheet" href="~/vendors/simple-line-icons/css/simple-line-icons.css">
+    <link rel="stylesheet" href="~/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="~/css/vertical-layout-light/style.css">
+    <link rel="shortcut icon" href="~/images/favicon.png"/>
+</head>
+
+<body>
+<div class="content ">
+    <div class="row">
+        
+        <div class="col-md-6" style="margin:auto; margin-top:5rem">
+            <div class="card  card-tasks">
+                <div class="card-header ">
+                    <h5 class="card-category text-success">Email Sent Successfully</h5>
+                </div>
+                <div class="card-body ">
+                  <h3>Registration Successfull</h3>
+
+                <p>Please Confirm you email first </p>
+
+                  <div class="form-group">
+                      <a class="form-control btn btn-primary" asp-area="" asp-controller="Account" asp-action="Login">Go to Login</a>
+                  </div>
+                </div>
+
+                <div class="card-footer ">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/vendors/js/vendor.bundle.base.js"></script>
+<script src="~/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+<script src="~/js/off-canvas.js"></script>
+<script src="~/js/hoverable-collapse.js"></script>
+<script src="~/js/template.js"></script>
+<script src="~/js/settings.js"></script>
+<script src="~/js/todolist.js"></script>
+</body>
+
+</html>
+

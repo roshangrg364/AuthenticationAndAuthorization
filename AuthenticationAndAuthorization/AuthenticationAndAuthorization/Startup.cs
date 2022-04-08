@@ -180,7 +180,7 @@ namespace AuthenticationAndAuthorization
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-         ForwardedHeaders.XForwardedProto
+                ForwardedHeaders.XForwardedProto
             });
             app.UseEndpoints(endpoints =>
             {

@@ -8,8 +8,10 @@ namespace EmailModule.Entity
 {
     public class EmailTemplate
     {
+        public const string TypeEmailConfirmation = "EmailConfirmation";
         public const string TypeRegistration = "Registration";
         public const string TypePasswordReset = "ResetPassword";
+        public const string TypeForgotPassword = "ForgotPassword";
 
         public EmailTemplate(string type, string template)
         {
@@ -27,7 +29,10 @@ namespace EmailModule.Entity
 
         public static IList<string> TemplateVariables => new List<string>
         {
-            "{Name}"
+            "{Name}",
+            "{ForgotPasswordLink}",
+            "{ResetPasswordLink}",
+            "{EmailConfirmationLink}",
         };
     }
     

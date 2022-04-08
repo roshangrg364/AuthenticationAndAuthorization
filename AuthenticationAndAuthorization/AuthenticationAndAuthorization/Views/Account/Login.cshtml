@@ -28,8 +28,8 @@
                 <div class="col-lg-4 mx-auto">
                     <div class="auth-form-light text-left py-5 px-4 px-sm-5">
                         <div class="brand-logo">
-                            <img src="~/images/logo.svg" alt="logo">
-                        </div>
+                          @*  <img src="~/images/logo.svg" alt="logo">
+                      *@  </div>
                         @Html.ValidationSummary()
                         <h4>Hello! let's get started</h4>
                         <h6 class="fw-light">Sign in to continue.</h6>
@@ -52,8 +52,10 @@
                                         Keep me signed in
                                     </label>
                                 </div>
+
                                 <a asp-area="" asp-controller="Account" asp-action="ForgotPassword" class="auth-link text-black">Forgot password?</a>
                             </div>
+                            </form>
                             <div class="mb-2">
                                 <h4>Also Login With</h4>
                                 <form method="post" asp-action="ExternalLogin" asp-route-ReturnUrl="@Model.ReturnUrl">
@@ -69,9 +71,9 @@
                                 </form>
                             </div>
                             <div class="text-center mt-4 fw-light">
-                                @* Don't have an account? <a href="register.html" class="text-primary">Create</a> *@
+                              Don't have an account? <a asp-area="" asp-controller="UserRegistration" asp-action="Register" class="text-primary">Create</a> 
                             </div>
-                        </form>
+                        
                     </div>
                 </div>
             </div>

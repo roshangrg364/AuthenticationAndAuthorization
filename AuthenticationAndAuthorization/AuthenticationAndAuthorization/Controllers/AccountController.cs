@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AuthenticationAndAuthorization.Models;
+using EmailModule.Entity;
+using EmailModule.Repository;
+using EmailModule.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -26,12 +30,16 @@ namespace AuthenticationAndAuthorization.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly IToastNotification _notify;
         private readonly UserServiceInterface _userService;
+        private readonly EmailSenderServiceInterface _emailSenderService;
+        private readonly EmailTemplateRepositoryInterface _emailTemplateRepo;
         public AccountController(ILogger<AccountController> logger,
             UserRepositoryInterface userRepo,
             IToastNotification notify,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            UserServiceInterface userService)
+            UserServiceInterface userService,
+            EmailSenderServiceInterface emailSender,
+            EmailTemplateRepositoryInterface emailTemplateRepo)
         {
             _logger = logger;
             _userRepo = userRepo;
@@ -39,6 +47,8 @@ namespace AuthenticationAndAuthorization.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
             _userService = userService;
+            _emailSenderService = emailSender;
+            _emailTemplateRepo = emailTemplateRepo;
         }
         public async Task<IActionResult> Login(string ReturnUrl = "/Home/Index")
         {
@@ -60,8 +70,7 @@ namespace AuthenticationAndAuthorization.Controllers
                 {
 
                     var user = await _userManager.FindByNameAsync(model.UserName) ?? throw new Exception("Incorrect UserName or Password");
-                   // var IsPasswordCorrect = await _userManager.CheckPasswordAsync(user, model.Password);
-                    //if (!IsPasswordCorrect) throw new Exception("Incorrect UserName or Password");
+
                     if (!user.EmailConfirmed)
                     {
                         throw new Exception("Email not Confirmed");
@@ -176,7 +185,11 @@ namespace AuthenticationAndAuthorization.Controllers
                             user = await _userManager.FindByEmailAsync(email) ?? throw new UserNotFoundException();
                             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                             var confirmationLink = Url.Action("ConfirmEmail", "Account", new { email = user.Email, token = token }, Request.Scheme);
-                            _logger.Log(LogLevel.Warning, confirmationLink);
+                            var confirmationTemplate = await _emailTemplateRepo.GetByType(EmailTemplate.TypeRegistration) ?? throw new Exception("Email Confirmation Template Not Found");
+                            var template = confirmationTemplate.Template;
+                            template = GenerateTemplate(user, confirmationLink, template);
+                            var emailMessage = new Message(new List<string> { user.Email }, "Email Confirmation", template, null);
+                            await _emailSenderService.SendEmail(emailMessage);
                             return RedirectToAction("Success","UserRegistration");
                         }
                         await _userManager.AddLoginAsync(user, externalLoginInfo);
@@ -234,17 +247,38 @@ namespace AuthenticationAndAuthorization.Controllers
                 {
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait(true);
                     var resetPasswordLink = Url.Action("ResetPassword", "Account", new { email = model.Email, token = token }, Request.Scheme);
-                    _logger.Log(LogLevel.Information, resetPasswordLink);
+                    var forgotpasswordTemplate = await _emailTemplateRepo.GetByType(EmailTemplate.TypeForgotPassword) ?? throw new Exception("Forgot password Template Not Defined");
+                    var template = forgotpasswordTemplate.Template;
+                    template = GenerateTemplate(user, resetPasswordLink, template);
+                    var emailMessage = new Message(new List<string> { model.Email }, "forgot password", template, null);
+                    await _emailSenderService.SendEmail(emailMessage);
                     return View(nameof(ForgotPasswordConfirmation));
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                _notify.AddSuccessToastMessage(ex.Message);
+                _notify.AddErrorToastMessage(ex.Message);
             }
             return View(model);
         }
+
+        private static string GenerateTemplate(User user, string urlLink, string template)
+        {
+            var Replacements = new Dictionary<string, string>();
+            Replacements.Add("{Name}", user.Name);
+            Replacements.Add("{EmailConfirmationLink}", urlLink);
+            Replacements.Add("{ResetPasswordLink}", urlLink);
+            Replacements.Add("{ForgotPasswordLink}", urlLink);
+
+            foreach (var replacement in Replacements)
+            {
+                template = template.Replace(replacement.Key, replacement.Value);
+            }
+
+            return template;
+        }
+
         [AllowAnonymous]
         public async Task<IActionResult> ForgotPasswordConfirmation()
         {

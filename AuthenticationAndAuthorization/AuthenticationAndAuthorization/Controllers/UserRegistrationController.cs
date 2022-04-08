@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AuthenticationAndAuthorization.Areas.User.Controllers;
 using AuthenticationAndAuthorization.Areas.User.ViewModel;
 using EmailModule.Entity;
+using EmailModule.Repository;
 using EmailModule.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -26,13 +28,15 @@ namespace AuthenticationAndAuthorization.Controllers
         private readonly UserServiceInterface _userService;
         private readonly ILogger<UserController> _logger;
         private readonly EmailSenderServiceInterface _emailSenderService;
+        private readonly EmailTemplateRepositoryInterface _emailTemplateRepo;
         public UserRegistrationController(UserRepositoryInterface userRepository,
             IToastNotification notify,
             UserServiceInterface userService,
             ILogger<UserController> logger,
             RoleManager<IdentityRole> roleManager,
             UserManager<User> userManager,
-            EmailSenderServiceInterface emailSenderService)
+            EmailSenderServiceInterface emailSenderService,
+            EmailTemplateRepositoryInterface emailTemplateRepo)
         {
             _userRepo = userRepository;
             _notify = notify;
@@ -41,6 +45,7 @@ namespace AuthenticationAndAuthorization.Controllers
             _roleManager = roleManager;
             _userManager = userManager;
             _emailSenderService = emailSenderService;
+            _emailTemplateRepo = emailTemplateRepo;
         }
         public IActionResult Register()
         {
@@ -65,7 +70,11 @@ namespace AuthenticationAndAuthorization.Controllers
                 var user = await _userManager.FindByEmailAsync(model.EmailAddress).ConfigureAwait(true);
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var confirmationLink = Url.Action("ConfirmEmail", "Account", new { email = user.Email, token = token }, Request.Scheme);
-                var message = new Message(new string[] { "roshan.grg364@gmail.com" }, "test email", "<a href=" + confirmationLink + ">Confirm email</a>", null);
+
+                var emailConfirmationTemplate = await _emailTemplateRepo.GetByType(EmailTemplate.TypeRegistration) ?? throw new Exception("Email Confirmation Template Not Found");
+                var template = emailConfirmationTemplate.Template;
+                template = GenerateTemplate(user, confirmationLink, template);
+                var message = new Message(new string[] { "roshan.grg364@gmail.com" }, "User Registration",template, null);
                 await _emailSenderService.SendEmail(message);
                 return RedirectToAction(nameof(Success));
               
@@ -78,6 +87,20 @@ namespace AuthenticationAndAuthorization.Controllers
             return RedirectToAction("Login", "Account");
         }
 
+        private static string GenerateTemplate(User user, string urlLink, string template)
+        {
+            var Replacements = new Dictionary<string, string>();
+            Replacements.Add("{Name}", user.Name);
+            Replacements.Add("{EmailConfirmationLink}", urlLink);
+         
+
+            foreach (var replacement in Replacements)
+            {
+                template = template.Replace(replacement.Key, replacement.Value);
+            }
+
+            return template;
+        }
         public IActionResult Success()
         {
             return View();

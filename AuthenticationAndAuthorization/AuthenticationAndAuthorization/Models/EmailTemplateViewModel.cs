@@ -18,7 +18,8 @@ namespace AuthenticationAndAuthorization.Models
         public string Type { get; set; }
         private IList<string> TypeList { get; set; } = new List<string> {
         EmailTemplate.TypeRegistration,
-        EmailTemplate.TypePasswordReset
+        EmailTemplate.TypePasswordReset,
+        EmailTemplate.TypeForgotPassword
         };
 
         public SelectList TypeSelectList => new SelectList(TypeList);

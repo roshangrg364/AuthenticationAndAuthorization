@@ -13,6 +13,7 @@ namespace AuthenticationAndAuthorization.Areas.User.ViewModel
         public string EmailAddress { get; set; }
         public string MobileNumber { get; set; }
         public string Status { get; set; }
+        public string Type { get; set; }
     }
 
     public class UserViewModel

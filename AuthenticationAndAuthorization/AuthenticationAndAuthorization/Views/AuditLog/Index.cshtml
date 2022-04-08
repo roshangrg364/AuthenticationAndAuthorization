@@ -1,0 +1,37 @@
+﻿@model IList<AuthenticationAndAuthorization.Models.AuditLogViewModel>
+@{
+}
+<div class="table-responsive">
+    <table id="logTable" class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>User</th>
+            <th>Type</th>
+            <th>Table</th>
+            <th> Old Values</th>
+            <th>New Values</th>
+            <th>Affected Columns</th>
+            <th> Action On</th>
+            
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td > @item.Id</td>
+                <td> @item.UserName</td>
+                <td> @item.Type</td>
+                <td> @item.TableName</td>
+                <td> @item.OldValues</td>
+                <td> @item.NewValues</td>
+                <td> @item.AffectedColumns</td>
+                <td> @item.ActionOn</td>
+               
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
