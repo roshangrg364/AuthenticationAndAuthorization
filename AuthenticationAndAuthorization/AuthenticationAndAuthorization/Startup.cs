@@ -1,10 +1,12 @@
 using System;
+using System.Text;
 using System.Threading.Tasks;
 using AuthenticationAndAuthorization.ActionFilters;
 using AuthenticationAndAuthorization.CustomTokenProvider;
 using AuthenticationAndAuthorization.Extensions;
 using BaseModule.DbContextConfig;
 using EmailModule.Entity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using NToastNotify;
 using UserModule.Entity;
 using UserModule.PermissionHandler;
@@ -93,7 +96,7 @@ namespace AuthenticationAndAuthorization
             .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 
             services.AddAuthentication()
-                 .AddGoogle(options =>
+              .AddGoogle(options =>
                  {
                      options.ClientId = Configuration["Google:ClientId"];
                      options.ClientSecret = Configuration["Google:ClientSecret"];
@@ -103,6 +106,23 @@ namespace AuthenticationAndAuthorization
                      options.AppId = Configuration["Facebook:ClientId"];
                      options.AppSecret = Configuration["Facebook:ClientSecret"];
                  });
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+               .AddJwtBearer(options =>
+               {
+                   options.SaveToken = true;
+                   options.RequireHttpsMetadata = false;
+                   options.TokenValidationParameters = new TokenValidationParameters()
+                   {
+                       ValidateIssuer = false,
+                       ValidateAudience = false,
+                       //ValidAudience = Configuration["JWT:ValidAudience"],
+                       //ValidIssuer = Configuration["JWT:ValidIssuer"],
+                       IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+                   };
+               });
+
+
             services.UseInventoryDiConfig();
 
             services.Configure<CookiePolicyOptions>(

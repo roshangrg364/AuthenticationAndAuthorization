@@ -6,6 +6,7 @@ using BaseModule.Repository.User;
 using EmailModule.Repository;
 using EmailModule.Service;
 using Microsoft.Extensions.DependencyInjection;
+using UserModule.Authentication;
 using UserModule.Repository;
 using UserModule.Service;
 
@@ -26,6 +27,7 @@ namespace AuthenticationAndAuthorization
             services.AddTransient<ActivityLogRepositoryInterface, ActivityLogRepository>();
             services.AddTransient<ActivityLogServiceInterface, ActivityLogService>();
             services.AddTransient<AuditLogRepositoryInterface, AuditLogRepository>();
+         
 
         }
         private static void UserEmailConfig(IServiceCollection services)
@@ -47,6 +49,7 @@ namespace AuthenticationAndAuthorization
         {
             services.AddScoped<UserServiceInterface, UserService>();
             services.AddScoped<RoleServiceInterface, RoleService>();
+            services.AddScoped<TokenGeneratorInterface, TokenGenerator>();
         }
     }
 }

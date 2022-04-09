@@ -85,9 +85,13 @@ namespace AuthenticationAndAuthorization.Controllers
                         }
                         return RedirectToAction("Index", "Home");
                     }
-                    if(isSucceeded.IsLockedOut)
+                    else if(isSucceeded.IsLockedOut)
                     {
                         return RedirectToAction(nameof(LockOut));
+                    }
+                    else
+                    {
+                        _notify.AddErrorToastMessage("Incorrect UserName Or Password");
                     }
                   
                 }
@@ -221,11 +225,15 @@ namespace AuthenticationAndAuthorization.Controllers
                     _notify.AddSuccessToastMessage("Email Confirmed Successfully");
                     return RedirectToAction(nameof(Login));
                 }
+                else
+                {
+                    _notify.AddSuccessToastMessage("Email Confirmation failed");
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                _notify.AddSuccessToastMessage(ex.Message);
+                _notify.AddErrorToastMessage(ex.Message);
             }
             
             return RedirectToAction(nameof(Login));
