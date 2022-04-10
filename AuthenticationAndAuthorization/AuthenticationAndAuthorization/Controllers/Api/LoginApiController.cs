@@ -41,6 +41,7 @@ namespace AuthenticationAndAuthorization.Controllers.Api
         public async Task<IActionResult> GetUser()
 
         {
+            var test = this.HttpContext.User;
             var user = await _userManager.Users.ToListAsync();
           var firstUser = user.First();
 

@@ -14,8 +14,8 @@ namespace UserModule.Authentication
     {
         public string GenerateToken(TokenDto dto)
         {
-			var tokenHandler = new JwtSecurityTokenHandler();
-			var tokenKey = Encoding.UTF8.GetBytes(dto.JwtKey);
+			var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(dto.JwtKey));
+			var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 			var claims = new List<Claim>()
 			{
 				   new Claim(JwtRegisteredClaimNames.Sub, dto.UserId.ToString()),
@@ -24,16 +24,14 @@ namespace UserModule.Authentication
 					new DateTimeOffset(DateTime.Now.AddMinutes(30)).ToUnixTimeSeconds().ToString()),
 				new Claim("username", dto.UserName)
 			};
-            
-			var tokenDescriptor = new SecurityTokenDescriptor
-			{
-				Subject = new ClaimsIdentity(claims),
-				Expires = DateTime.UtcNow.AddMinutes(10),
-				SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature)
-			};
-			var token = tokenHandler.CreateToken(tokenDescriptor);
-			return  tokenHandler.WriteToken(token) ;
+			var token = new JwtSecurityToken(null,
+			 null,
+			  claims,
+			  expires: DateTime.Now.AddMinutes(120),
+			  signingCredentials: credentials);
 
+			return new JwtSecurityTokenHandler().WriteToken(token);
+			
 		}
 	}
 }
